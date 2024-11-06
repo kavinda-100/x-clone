@@ -1,0 +1,10 @@
+.idea
+node_modules
+dist
+
+build
+build/*
+coverage
+
+
+.env
