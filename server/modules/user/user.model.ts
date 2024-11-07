@@ -43,6 +43,11 @@ const userModel = new mongoose.Schema<zodUserSchemaType>({
         type: Array,
         required: false,
         default: []
+    },
+    isEmailVerified: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 }, {timestamps: true});
 
