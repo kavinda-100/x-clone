@@ -1,10 +1,34 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import MainLayout from "./LayOuts/MainLayout";
-import { Chat, Home, NotFound, SignIn, SignUp } from "./pages";
+import { Chat, Home, NotFound, SignIn, SignUp, LoaderPage } from "./pages";
 import { useUserStore } from "./store/useUserStore";
+import { useQuery } from "@tanstack/react-query";
+import { getMe } from "./api/auth";
+import { toast } from "sonner";
 
 const App = () => {
+  const navigate = useNavigate();
   const { user } = useUserStore();
+
+  //get the user from the backend
+  const { data, isSuccess, isLoading, isError, error } = useQuery({
+    queryKey: ["authUser", "me"],
+    queryFn: getMe,
+  });
+
+  if (isLoading) return <LoaderPage />;
+
+  if (isError) {
+    console.log("error in fetching user data in App.tsx", error);
+    toast.error(error.message);
+    navigate("/sign-in");
+  }
+
+  if (isSuccess) {
+    console.log("user data in App.tsx", data);
+    // setUser(data?.data?.data);
+  }
+
   return (
     <main className={"w-full max-w-[1400px] mx-auto min-h-screen "}>
       <Routes>

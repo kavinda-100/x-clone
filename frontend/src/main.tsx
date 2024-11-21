@@ -1,16 +1,44 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { ThemeProvider } from "@/components/Theme-provider"
-import {BrowserRouter} from "react-router-dom";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+import { ThemeProvider } from "@/components/Theme-provider";
+import { BrowserRouter } from "react-router-dom";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
+import axios from "axios";
 
-createRoot(document.getElementById('root')!).render(
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      if (axios.isAxiosError(error) && error.response?.data?.error) {
+        console.error("Global Error:", error.response.data.error);
+      } else {
+        console.error("Global Error:", error.message);
+      }
+    },
+  }),
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    },
+  },
+});
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-              <App />
-          </ThemeProvider>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <App />
+          <Toaster />
+        </ThemeProvider>
       </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>,
-)
+);
