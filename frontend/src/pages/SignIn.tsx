@@ -63,8 +63,12 @@ const SignIn = () => {
   }
 
   return (
-    <section className={"w-full h-screen flex justify-center items-center"}>
-      <Card className={"min-w-[200px] max-w-[400px] w-full"}>
+    <main
+      className={
+        "w-full max-w-[1400px] mx-auto min-h-screen flex justify-center items-center"
+      }
+    >
+      <Card className={"max-w-[400px] w-full"}>
         <CardHeader>
           <CardTitle className={"text-center text-xl"}>Sign In 🔑</CardTitle>
         </CardHeader>
@@ -130,7 +134,6 @@ const SignIn = () => {
             </form>
           </Form>
         </CardContent>
-        <div></div>
         <CardFooter className={"flex-col justify-end items-end gap-3"}>
           <p className={"text-sm"}>
             Don't have an account?
@@ -149,7 +152,7 @@ const SignIn = () => {
           </Link>
         </CardFooter>
       </Card>
-    </section>
+    </main>
   );
 };
 

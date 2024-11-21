@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { ThemeProvider } from "@/components/Theme-provider";
-import { BrowserRouter } from "react-router-dom";
 import {
   QueryCache,
   QueryClient,
@@ -33,12 +32,10 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <App />
-          <Toaster />
-        </ThemeProvider>
-      </BrowserRouter>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <App />
+        <Toaster />
+      </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,
 );
