@@ -43,54 +43,51 @@ const LeftSideBar = () => {
           </Button>
         </div>
       </aside>
-
-      {/*    mobile sidebar */}
-      <div className={"lg:hidden"}>
-        <Sheet>
-          <SheetTrigger>
-            <AlignLeft />
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle></SheetTitle>
-            </SheetHeader>
-            <SheetContent side={"left"}>
-              <div className={"flex flex-col gap-3 w-full"}>
-                <Button
-                  variant={location.pathname === "/" ? "secondary" : "ghost"}
-                  onClick={() => navigate("/")}
-                  className={"w-full flex justify-start items-center gap-2"}
-                >
-                  <House />
-                  Home
-                </Button>
-                <Button
-                  variant={
-                    location.pathname === "/chat" ? "secondary" : "ghost"
-                  }
-                  onClick={() => navigate("/chat")}
-                  className={"w-full flex justify-start items-center gap-2"}
-                >
-                  <MessageCircle />
-                  Message
-                </Button>
-                <Button
-                  variant={
-                    location.pathname === "/setting" ? "secondary" : "ghost"
-                  }
-                  onClick={() => navigate("/setting")}
-                  className={"w-full flex justify-start items-center gap-2"}
-                >
-                  <Settings />
-                  Settings
-                </Button>
-              </div>
-            </SheetContent>
-          </SheetContent>
-        </Sheet>
-      </div>
     </>
   );
 };
 
 export default LeftSideBar;
+
+export const LeftSideBarMobile = () => {
+  return (
+    <Sheet>
+      <SheetTrigger>
+        <AlignLeft />
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle></SheetTitle>
+        </SheetHeader>
+        <SheetContent side={"left"}>
+          <div className={"flex flex-col gap-3 w-full"}>
+            <Button
+              variant={location.pathname === "/" ? "secondary" : "ghost"}
+              onClick={() => navigate("/")}
+              className={"w-full flex justify-start items-center gap-2"}
+            >
+              <House />
+              Home
+            </Button>
+            <Button
+              variant={location.pathname === "/chat" ? "secondary" : "ghost"}
+              onClick={() => navigate("/chat")}
+              className={"w-full flex justify-start items-center gap-2"}
+            >
+              <MessageCircle />
+              Message
+            </Button>
+            <Button
+              variant={location.pathname === "/setting" ? "secondary" : "ghost"}
+              onClick={() => navigate("/setting")}
+              className={"w-full flex justify-start items-center gap-2"}
+            >
+              <Settings />
+              Settings
+            </Button>
+          </div>
+        </SheetContent>
+      </SheetContent>
+    </Sheet>
+  );
+};

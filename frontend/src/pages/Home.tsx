@@ -5,7 +5,7 @@ import Following from "@/components/tabs/Following";
 const Home = () => {
   return (
     <div className={"w-full h-auto"}>
-      <Tabs defaultValue="following" className="w-full mt-2">
+      <Tabs defaultValue="for-you" className="w-full mt-2">
         <TabsList className={"w-full"}>
           <TabsTrigger value="for-you" className={"w-full"}>
             For You

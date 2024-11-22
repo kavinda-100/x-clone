@@ -23,7 +23,8 @@ export const getAllPosts = async (req: Request, res: Response) => {
     const posts = await PostModel.find()
       .skip(skip)
       .limit(Number(limit))
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate("userId", "userName profileImage");
     // Send a success response with the fetched posts
     successResponse(res, 200, "all posts", posts);
   } catch (e: Error | any) {
@@ -61,7 +62,8 @@ export const getFollowingPosts = async (req: any, res: Response) => {
         return PostModel.find({ userId: follow.following_user_id })
           .skip(skip)
           .limit(Number(limit))
-          .sort({ createdAt: -1 });
+          .sort({ createdAt: -1 })
+          .populate("userId", "userName profileImage");
       }),
     );
     // Flatten the array of posts
@@ -111,8 +113,8 @@ export const getFollowingsPostsByUserName = async (
     const posts = await PostModel.find({ userId: user._id })
       .skip(skip)
       .limit(Number(limit))
-      .sort({ createdAt: -1 });
-
+      .sort({ createdAt: -1 })
+      .populate("userId", "userName profileImage");
     // remove sensitive data from user object
     const { password, ...userData } = user.toObject();
     // send response
@@ -136,7 +138,10 @@ export const getSinglePostByPostID = async (req: Request, res: Response) => {
   const skip = (Number(page) - 1) * Number(limit);
   try {
     // check if post exists
-    const post = await PostModel.findById(postId);
+    const post = await PostModel.findById(postId).populate(
+      "userId",
+      "userName profileImage",
+    );
     if (!post) {
       errorResponse(res, 404, "post not found");
       return;

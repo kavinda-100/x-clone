@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { LeftSideBarMobile } from "./LeftSideBar";
 
 const Header = () => {
   const theme = useTheme();
@@ -63,7 +64,7 @@ const Header = () => {
       </div>
 
       {/* mobile nav */}
-      <div className={"flex lg:hidden"}>
+      <div className={"flex justify-center items-center gap-2 lg:hidden"}>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
@@ -90,6 +91,10 @@ const Header = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* mobile sidebar*/}
+        <div>
+          <LeftSideBarMobile />
+        </div>
       </div>
     </header>
   );

@@ -1,6 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "./LayOuts/MainLayout";
-import { Chat, Home, NotFound, SignIn, SignUp, LoaderPage } from "./pages";
+import {
+  Chat,
+  Home,
+  NotFound,
+  SignIn,
+  SignUp,
+  LoaderPage,
+  SinglePostPage,
+} from "./pages";
 import { useUserStore } from "./store/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./api/auth";
@@ -41,6 +49,7 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route path={"/"} element={<Home />} />
           <Route path={"/chat"} element={<Chat />} />
+          <Route path={"/post/:postId"} element={<SinglePostPage />} />
         </Route>
         {/*  not found page */}
         <Route path={"*"} element={<NotFound />} />
