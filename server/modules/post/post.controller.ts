@@ -9,6 +9,7 @@ import PostModel from "./post.model";
 import CommentModel from "./comment.model";
 import UserModel from "../user/user.model";
 import followersAndFollwingModel from "../followersAndFollwing/followersAndFollwing.model";
+import LikeUnlikeModel from "./LikeUnlike.model";
 
 // get all posts (for you section)
 export const getAllPosts = async (req: Request, res: Response) => {
@@ -245,6 +246,51 @@ export const commentOnPost = async (req: Request, res: Response) => {
     successResponse(res, 201, "comment created", savedComment);
   } catch (e: Error | any) {
     console.log("error in create comment", e);
+    errorResponse(res, 400, e.message);
+    return;
+  }
+};
+
+// like unlike post
+export const likeUnlikePost = async (req: any, res: Response) => {
+  const postId = req.params.post_id;
+  const userId = req.user.id;
+
+  let status: "like" | "unlike" | undefined = undefined;
+
+  try {
+    // check if post exists
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      errorResponse(res, 404, "post not found");
+      return;
+    }
+
+    const likes = await LikeUnlikeModel.findOne({
+      postId: postId,
+      userId: userId,
+    });
+    // check if user has already liked the post
+    if (!likes) {
+      // like post
+      const newLike = new LikeUnlikeModel({
+        postId: postId,
+        userId: userId,
+      });
+      await newLike.save();
+      post.likes += 1;
+      status = "like";
+    } else {
+      // unlike post
+      await LikeUnlikeModel.deleteOne({ postId: postId, userId: userId });
+      post.likes -= 1;
+      status = "unlike";
+    }
+    // save post
+    await post.save();
+    successResponse(res, 200, `post ${status}`);
+  } catch (e: Error | any) {
+    console.log("error in like post", e);
     errorResponse(res, 400, e.message);
     return;
   }

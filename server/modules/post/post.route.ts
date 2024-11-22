@@ -8,6 +8,7 @@ import {
   deletePost,
   commentOnPost,
   getSinglePostByPostID,
+  likeUnlikePost,
 } from "./post.controller";
 import authMiddleware from "../../middleware/authMiddleware";
 import { zodValidation } from "../../middleware/zodValidation";
@@ -45,5 +46,8 @@ router.post(
   zodValidation(zodCommentSchema),
   commentOnPost,
 );
+// like/unlike post
+// http://localhost:5000/api/post/like-unlike/:post_id
+router.post("/like-unlike/:post_id", authMiddleware, likeUnlikePost);
 
 export default router;
