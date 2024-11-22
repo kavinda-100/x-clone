@@ -95,14 +95,14 @@ export const getFollowingsPostsByUserName = async (
   req: Request,
   res: Response,
 ) => {
-  const userName = req.params.user_name;
+  const userName = req.params.username;
   // Extract page and limit from query parameters, with default values
   const { page = 1, limit = 10 } = req.query;
   // Calculate the number of documents to skip based on the page and limit
   const skip = (Number(page) - 1) * Number(limit);
   try {
     // fetch user id
-    const user = await UserModel.findOne({ user_name: userName });
+    const user = await UserModel.findOne({ userName: userName });
     if (!user) {
       errorResponse(res, 404, "user not found");
       return;
@@ -112,9 +112,12 @@ export const getFollowingsPostsByUserName = async (
       .skip(skip)
       .limit(Number(limit))
       .sort({ createdAt: -1 });
+
+    // remove sensitive data from user object
+    const { password, ...userData } = user.toObject();
     // send response
     successResponse(res, 200, "following user data", {
-      user: user,
+      user: userData,
       posts: posts,
     });
   } catch (e: Error | any) {
