@@ -30,7 +30,7 @@ const App = () => {
 
   if (isSuccess) {
     console.log("user data in App.tsx", data);
-    localStorage.setItem("user", JSON.stringify(data?.data?.data));
+    localStorage.setItem("user", JSON.stringify(data?.data));
   }
 
   return (

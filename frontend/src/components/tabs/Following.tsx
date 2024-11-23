@@ -23,7 +23,7 @@ const Following = () => {
     getNextPageParam: (lastPage, allPages) => {
       // console.log("lastPage", lastPage);
       // console.log("allPages", allPages);
-      return lastPage?.data?.data.length > 0 ? allPages.length + 1 : undefined;
+      return lastPage?.data.length > 0 ? allPages.length + 1 : undefined;
     },
   });
   // TODO: This is how map function should be used in "infiniteQuery" its a map function inside a map function
@@ -49,7 +49,7 @@ const Following = () => {
       {status === "error" && <p>{error.message}</p>}
       {status === "success" &&
         data?.pages.map((page) =>
-          page?.data?.data.map((post: PostType) => (
+          page?.data.map((post: PostType) => (
             <Post
               key={post._id}
               _id={post._id}

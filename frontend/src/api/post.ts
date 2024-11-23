@@ -6,7 +6,8 @@ type getAllPostType = {
 };
 export const getAllPosts = async ({ pageParam }: getAllPostType) => {
   try {
-    return await API.get(`/post/all?page=${pageParam}`);
+    const response = await API.get(`/post/all?page=${pageParam}`);
+    return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
@@ -14,7 +15,8 @@ export const getAllPosts = async ({ pageParam }: getAllPostType) => {
 
 export const getAllPostsFollowing = async ({ pageParam }: getAllPostType) => {
   try {
-    return await API.get(`/post/following?page=${pageParam}`);
+    const response = await API.get(`/post/following?page=${pageParam}`);
+    return response.data;
   } catch (error) {
     handleAxiosError(error);
   }

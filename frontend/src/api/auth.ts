@@ -5,7 +5,8 @@ import { zodSignInSchema } from "../../../server/shared/zod/user";
 
 export const getMe = async () => {
   try {
-    return await API.get("/user/me");
+    const response = await API.get("/user/me");
+    return response.data;
   } catch (error) {
     handleAxiosError(error);
   }

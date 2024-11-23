@@ -11,7 +11,7 @@ export const followUnfollow = async (req: any, res: Response) => {
     const { following_user_id } = req.body;
     // if the following_user_id is not provided
     if (!following_user_id) {
-      errorResponse(res, 400, "following_user_id is required");
+      errorResponse(res, 400, "following user id is required");
       return;
     }
     // Check if the user is trying to follow himself
