@@ -32,7 +32,7 @@ const Header = () => {
       console.log("data in sign out", data);
       toast.success("Sign out successfully");
       logout();
-      localStorage.removeItem("user");
+      // localStorage.removeItem("user");
       navigate("/sign-in");
     },
   });

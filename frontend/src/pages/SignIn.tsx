@@ -44,6 +44,7 @@ const SignIn = () => {
       console.log("data in sign in", data);
       queryClient.invalidateQueries({ queryKey: ["authUser", "me"] });
       setUser(data?.data?.data);
+      // localStorage.setItem("user", JSON.stringify(data?.data?.data));
       navigate("/");
     },
   });

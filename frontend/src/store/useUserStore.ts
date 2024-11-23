@@ -8,9 +8,10 @@ type useUserStoreType = {
 };
 
 export const useUserStore = create<useUserStoreType>((set) => ({
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")!)
-    : null,
+  // user: localStorage.getItem("user")
+  //   ? JSON.parse(localStorage.getItem("user")!)
+  //   : null,
+  user: null,
 
   setUser: (user) => set({ user }),
 

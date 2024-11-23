@@ -20,3 +20,22 @@ export const followUnfollowUser = async (following_user_id: string) => {
     handleAxiosError(error);
   }
 };
+
+type GetUserByUsernameResponse = {
+  userName: string;
+  pageParam: number;
+};
+
+export const getUserByUsername = async ({
+  pageParam,
+  userName,
+}: GetUserByUsernameResponse) => {
+  try {
+    const response = await API.get(
+      `/post/following/${userName}?page=${pageParam}`,
+    );
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};

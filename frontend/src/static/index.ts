@@ -1,3 +1,10 @@
+export const PlaceHolderImage = {
+  profileImage:
+    "https://www.murrayglass.com/wp-content/uploads/2020/10/avatar-1024x1024.jpeg",
+  coverImage:
+    "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
+};
+
 export const RECOMMEND_FOR_YOU = [
   {
     id: "1",

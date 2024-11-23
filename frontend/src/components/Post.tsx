@@ -29,14 +29,16 @@ const Post = ({
     navigate(`/post/${postId}`);
   };
 
-  const userClickHandler = () => {};
+  const userClickHandler = (username: string) => {
+    navigate(`/user/${username}`);
+  };
 
   return (
     <Card className={"w-full mb-1 cursor-pointer"}>
       <CardHeader>
         <div className={"flex justify-between items-center"}>
           <div
-            onClick={() => userClickHandler}
+            onClick={() => userClickHandler(userName)}
             className={"flex justify-start items-center gap-3 cursor-pointer"}
           >
             <Avatar>
