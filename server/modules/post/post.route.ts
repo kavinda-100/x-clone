@@ -17,13 +17,13 @@ import { zodCommentSchema, zodPostSchema } from "../../shared/zod/post";
 const router = express.Router();
 
 // get all posts
-// http://localhost:5000/api/post/all?page=1&limit=10
+// http://localhost:5000/api/post/all?page=1
 router.get("/all", authMiddleware, getAllPosts);
 // get post of the following users
-// http://localhost:5000/api/post/following/?page=1&limit=10
+// http://localhost:5000/api/post/following/?page=1
 router.get("/following", authMiddleware, getFollowingPosts);
 // get post of the following user by userName
-// http://localhost:5000/api/post/following/:username?page=1&limit=10
+// http://localhost:5000/api/post/following/:username?page=1
 router.get(
   "/following/:username",
   authMiddleware,

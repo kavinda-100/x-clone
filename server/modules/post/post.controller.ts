@@ -11,10 +11,13 @@ import UserModel from "../user/user.model";
 import followersAndFollwingModel from "../followersAndFollwing/followersAndFollwing.model";
 import LikeUnlikeModel from "./LikeUnlike.model";
 
+// default page and limit values
+const limit = 10;
+
 // get all posts (for you section)
 export const getAllPosts = async (req: Request, res: Response) => {
   // Extract page and limit from query parameters, with default values
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1 } = req.query;
   // Calculate the number of documents to skip based on the page and limit
   const skip = (Number(page) - 1) * Number(limit);
 
@@ -39,7 +42,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
 export const getFollowingPosts = async (req: any, res: Response) => {
   const userId = req.user.id;
   // Extract page and limit from query parameters, with default values
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1 } = req.query;
   // Calculate the number of documents to skip based on the page and limit
   const skip = (Number(page) - 1) * Number(limit);
   try {
@@ -99,7 +102,7 @@ export const getFollowingsPostsByUserName = async (
 ) => {
   const userName = req.params.username;
   // Extract page and limit from query parameters, with default values
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1 } = req.query;
   // Calculate the number of documents to skip based on the page and limit
   const skip = (Number(page) - 1) * Number(limit);
   try {
@@ -133,7 +136,7 @@ export const getFollowingsPostsByUserName = async (
 export const getSinglePostByPostID = async (req: Request, res: Response) => {
   const postId = req.params.post_id;
   // Extract page and limit from query parameters, with default values
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1 } = req.query;
   // Calculate the number of documents to skip based on the page and limit
   const skip = (Number(page) - 1) * Number(limit);
   try {

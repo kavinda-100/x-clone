@@ -2,23 +2,19 @@ import API from "./index";
 import { handleAxiosError } from "./index";
 
 type getAllPostType = {
-  page: number | undefined;
-  limit: number | undefined;
+  pageParam: number;
 };
-export const getAllPosts = async ({ page = 1, limit = 10 }: getAllPostType) => {
+export const getAllPosts = async ({ pageParam }: getAllPostType) => {
   try {
-    return await API.get(`/post/all?page=${page}&limit=${limit}`);
+    return await API.get(`/post/all?page=${pageParam}`);
   } catch (error) {
     handleAxiosError(error);
   }
 };
 
-export const getAllPostsFollowing = async ({
-  page = 1,
-  limit = 10,
-}: getAllPostType) => {
+export const getAllPostsFollowing = async ({ pageParam }: getAllPostType) => {
   try {
-    return await API.get(`/post/following?page=${page}&limit=${limit}`);
+    return await API.get(`/post/following?page=${pageParam}`);
   } catch (error) {
     handleAxiosError(error);
   }
