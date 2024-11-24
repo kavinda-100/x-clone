@@ -75,6 +75,32 @@ export const zodResetPasswordSchema = z.object({
 export type zodResetPasswordSchemaType = z.infer<typeof zodResetPasswordSchema>;
 
 // update user schema
-export const zodUpdateUserSchema = zodUserSchema.partial();
+export const zodUpdateUserSchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: "name must be at least 3 character log" })
+    .max(255)
+    .optional(),
+  email: z.string().email({ message: "Invalid Email" }).optional(),
+  userName: z
+    .string()
+    .min(3, { message: "useName must be at least 3 character log" })
+    .max(255)
+    .optional(),
+  password: z.string().optional(),
+  profileImage: z.string().url({ message: "Invalid URL" }).optional(),
+  coverImage: z.string().url({ message: "Invalid URL" }).optional(),
+  isEmailVerified: z.boolean().default(false),
+  bio: z.string().max(255).optional(),
+  location: z.string().max(255).optional(),
+  socialLinks: z
+    .array(
+      z.object({
+        name: z.string().min(1).max(255),
+        url: z.string().url({ message: "Invalid URL" }),
+      }),
+    )
+    .optional(),
+});
 
 export type zodUpdateUserSchemaType = z.infer<typeof zodUpdateUserSchema>;

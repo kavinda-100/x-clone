@@ -1,5 +1,5 @@
 import { IKUpload, IKImage } from "imagekitio-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { CloudUpload } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,10 +19,17 @@ const UserBanner = ({
   const profileImageRef = useRef<any | null>(null);
   const coverImageRef = useRef<any | null>(null);
 
-  const [profileImageFile, setProfileImageFile] = useState<string | null>(null);
-  const [coverImageFile, setCoverImageFile] = useState<string | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<string | undefined>(
+    "",
+  );
+  const [coverImageFile, setCoverImageFile] = useState<string | undefined>("");
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setProfileImageFile(profileImage);
+    setCoverImageFile(coverImage);
+  }, [profileImage, coverImage]);
 
   // for profile image
   const { mutate: profileMutate } = useMutation({
@@ -93,10 +100,10 @@ const UserBanner = ({
       <div className={"relative"}>
         {/* for cover image */}
         <IKImage
-          src={coverImageFile || coverImage}
+          src={coverImageFile || ""}
           alt={"userName"}
           loading={"lazy"}
-          lqip={{ active: true, quality: 20 }}
+          lqip={{ active: true }}
           className={"w-full h-[150px] lg:h-[250px] object-cover rounded"}
         />
         {isSettingsPage && (
@@ -121,10 +128,10 @@ const UserBanner = ({
           }
         >
           <IKImage
-            src={profileImageFile || profileImage}
+            src={profileImageFile || ""}
             alt={"userName"}
             loading={"lazy"}
-            lqip={{ active: true, quality: 20 }}
+            lqip={{ active: true }}
             className={"w-full h-full object-cover rounded-full"}
           />
           {isSettingsPage && (

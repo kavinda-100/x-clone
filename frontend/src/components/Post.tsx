@@ -80,7 +80,7 @@ const Post = ({
             }
             src={image_url}
             alt={title}
-            lqip={{ active: true, quality: 20 }}
+            lqip={{ active: true }}
             loading={"lazy"}
           />
         )}

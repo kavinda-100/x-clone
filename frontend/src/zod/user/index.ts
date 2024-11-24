@@ -4,14 +4,17 @@ export const zodUserSchemaForFrontEnd = z.object({
   name: z
     .string({ message: "Name is required" })
     .min(3, { message: "name must be at least 3 character log" })
-    .max(255),
+    .max(255)
+    .optional(),
   email: z
     .string({ message: "Email is required" })
-    .email({ message: "Invalid Email" }),
+    .email({ message: "Invalid Email" })
+    .optional(),
   userName: z
     .string({ message: "Username is required" })
     .min(3, { message: "useName must be at least 3 character log" })
-    .max(255),
+    .max(255)
+    .optional(),
   password: z.string().optional(),
   profileImage: z.string().url({ message: "Invalid URL" }).optional(),
   coverImage: z.string().url({ message: "Invalid URL" }).optional(),

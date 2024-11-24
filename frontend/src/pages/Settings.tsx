@@ -12,6 +12,8 @@ import UserSettings from "../components/tabs/settings/UserSettings";
 import UserFollowers from "../components/tabs/user/UserFollowers";
 import UserFollowing from "../components/tabs/user/UserFollowing";
 import UserLiked from "../components/tabs/user/UserLiked";
+import { CalendarDays } from "lucide-react";
+import { capitalizeFirstLetter, formatJoinDate } from "../lib/utils";
 
 const Settings = () => {
   const { username } = useParams();
@@ -58,11 +60,22 @@ const Settings = () => {
         coverImage={user?.coverImage || PlaceHolderImage.coverImage}
         isSettingsPage={true}
       />
-      <div className={"text-center"}>
-        <h1 className={"text-md font-bold text-muted-foreground"}>
-          {username || ""}
+      <div className={"w-full"}>
+        <h1 className={"text-md lg:text-lg font-bold text-muted-foreground"}>
+          {capitalizeFirstLetter(username || "") || ""}
         </h1>
         <p className={"text-sm text-muted-foreground"}>{user?.email || ""}</p>
+        <p className={"text-sm font-semibold text-muted-foreground mt-2"}>
+          {user?.bio || "No bio"}
+        </p>
+        <div className={"mt-2 w-full"}>
+          <div className={"flex gap-3 justify-start items-center"}>
+            <CalendarDays className={"size-5"} />
+            <p className={"text-sm text-muted-foreground"}>
+              {formatJoinDate(user?.createdAt || "") || ""}
+            </p>
+          </div>
+        </div>
       </div>
       {/*  tabs */}
       <Tabs defaultValue="setting" className="w-full mt-3">

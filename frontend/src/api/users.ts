@@ -1,5 +1,7 @@
 import API from "./index";
 import { handleAxiosError } from "./index";
+import { z } from "zod";
+import { zodUserSchemaForFrontEnd } from "../zod/user";
 
 export const getRecommendUsers = async () => {
   try {
@@ -52,6 +54,17 @@ export const sendProfileImage = async (profileImage: string) => {
 export const sendCoverImage = async (coverImage: string) => {
   try {
     const response = await API.patch("/auth/update-user", { coverImage });
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const updateUser = async (
+  data: z.infer<typeof zodUserSchemaForFrontEnd>,
+) => {
+  try {
+    const response = await API.patch("/auth/update-user", data);
     return response.data;
   } catch (error) {
     handleAxiosError(error);

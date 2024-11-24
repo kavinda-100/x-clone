@@ -16,10 +16,29 @@ import { useUserStore } from "../../../store/useUserStore";
 import { Eye, EyeOff } from "lucide-react";
 import React from "react";
 import { zodUserSchemaForFrontEnd } from "../../../zod/user";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateUser } from "../../../api/users";
+import { toast } from "sonner";
 
 const UserSettings = () => {
   const { user } = useUserStore();
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: z.infer<typeof zodUserSchemaForFrontEnd>) =>
+      updateUser(data),
+    onSuccess: (data) => {
+      console.log("User updated successfully", data);
+      toast.success("User updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["authUser", "me"] });
+    },
+    onError: (error) => {
+      console.log("Error updating user", error);
+      toast.error(error.message || "Error updating user");
+    },
+  });
 
   const form = useForm<z.infer<typeof zodUserSchemaForFrontEnd>>({
     resolver: zodResolver(zodUserSchemaForFrontEnd),
@@ -40,7 +59,7 @@ const UserSettings = () => {
   });
 
   function onSubmit(values: z.infer<typeof zodUserSchemaForFrontEnd>) {
-    console.log(values);
+    mutate(values);
   }
 
   return (
@@ -187,7 +206,9 @@ const UserSettings = () => {
               Add Social Link
             </Button>
           </div>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Updating..." : "Update"}
+          </Button>
         </form>
       </Form>
     </div>
