@@ -56,6 +56,7 @@ const Settings = () => {
       <UserBanner
         profileImage={user?.profileImage || PlaceHolderImage.profileImage}
         coverImage={user?.coverImage || PlaceHolderImage.coverImage}
+        isSettingsPage={true}
       />
       <div className={"text-center"}>
         <h1 className={"text-md font-bold text-muted-foreground"}>

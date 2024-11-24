@@ -39,3 +39,21 @@ export const getUserByUsername = async ({
     handleAxiosError(error);
   }
 };
+
+export const sendProfileImage = async (profileImage: string) => {
+  try {
+    const response = await API.patch("/auth/update-user", { profileImage });
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const sendCoverImage = async (coverImage: string) => {
+  try {
+    const response = await API.patch("/auth/update-user", { coverImage });
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};

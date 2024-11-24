@@ -11,6 +11,7 @@ import { formatDateToRelativeTime } from "../lib/utils";
 import { Button } from "./ui/button";
 import { MessageSquareMore, ThumbsUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { IKImage, IKVideo } from "imagekitio-react";
 
 const Post = ({
   _id,
@@ -68,17 +69,33 @@ const Post = ({
           <p className={"font-light text-sm hover:opacity-55"}>{content}</p>
         </div>
         {image_url && (
-          <img
-            className={"w-full h-auto max-h-[400px] object-cover rounded-md"}
+          // <img
+          //   className={"w-full h-auto max-h-[400px] object-cover rounded-md"}
+          //   src={image_url}
+          //   alt={title}
+          // />
+          <IKImage
+            className={
+              "w-full h-auto max-h-[300px] lg:max-h-[400px] object-cover rounded-md"
+            }
             src={image_url}
             alt={title}
+            lqip={{ active: true, quality: 20 }}
+            loading={"lazy"}
           />
         )}
         {video_url && (
-          <video
+          // <video
+          //   src={video_url}
+          //   controls
+          //   className={"w-full h-auto max-h-[400px] object-cover rounded-md"}
+          // />
+          <IKVideo
             src={video_url}
-            controls
-            className={"w-full h-auto max-h-[400px] object-cover rounded-md"}
+            controls={true}
+            className={
+              "w-full h-auto max-h-[300px] lg:max-h-[400px] object-cover rounded-md"
+            }
           />
         )}
       </CardContent>

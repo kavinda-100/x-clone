@@ -61,7 +61,7 @@ const UserFeed = ({
         status === "success" && posts.length === 0 && (
           <div className={"w-full h-auto text-center"}>
             <p className={"text-muted-foreground"}>
-              You haven't created any post yet! please create some post
+              User has not posted anything yet
             </p>
           </div>
         )
