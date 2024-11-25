@@ -1,19 +1,25 @@
 import * as mongoose from "mongoose";
 
-const followersAndFollwingSchema = new mongoose.Schema({
+const followersAndFollwingSchema = new mongoose.Schema(
+  {
     following_user_id: {
-    type: mongoose.Schema.Types.ObjectId, //e.g:- id of the person who I am following
-    ref: "User",
-    required: true,
-  },
+      type: mongoose.Schema.Types.ObjectId, //e.g:- id of the person who I am following
+      ref: "User",
+      required: true,
+    },
     follower_user_id: {
-    type: mongoose.Schema.Types.ObjectId, //e.g:- my id
-    ref: "User",
-    required: true,
+      type: mongoose.Schema.Types.ObjectId, //e.g:- my id or the id of the person following me
+      ref: "User",
+      required: true,
+    },
   },
-}, { timestamps: true });
+  { timestamps: true },
+);
 
-const FollowersAndFollwingModel = mongoose.model("FollowersAndFollwing", followersAndFollwingSchema);
+const FollowersAndFollwingModel = mongoose.model(
+  "FollowersAndFollwing",
+  followersAndFollwingSchema,
+);
 
 export default FollowersAndFollwingModel;
 

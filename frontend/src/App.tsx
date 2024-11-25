@@ -61,7 +61,7 @@ const App = () => {
           <Route path={"/chat"} element={<Chat />} />
           <Route path={"/post/:postId"} element={<SinglePostPage />} />
           <Route path={"/user/:username"} element={<User />} />
-          <Route path={"/setting/:username"} element={<Settings />} />
+          <Route path={"/setting"} element={<Settings />} />
         </Route>
         {/*  not found page */}
         <Route path={"*"} element={<NotFound />} />

@@ -2,6 +2,7 @@ import API from "./index";
 import { handleAxiosError } from "./index";
 import { z } from "zod";
 import { zodUserSchemaForFrontEnd } from "../zod/user";
+import { ImagesUploadType } from "../types";
 
 export const getRecommendUsers = async () => {
   try {
@@ -42,18 +43,30 @@ export const getUserByUsername = async ({
   }
 };
 
-export const sendProfileImage = async (profileImage: string) => {
+export const sendProfileImage = async ({
+  ImageUrl,
+  ImageFileId,
+}: ImagesUploadType) => {
   try {
-    const response = await API.patch("/auth/update-user", { profileImage });
+    const response = await API.patch("/auth/update-user", {
+      profileImage: ImageUrl,
+      profileImageFileId: ImageFileId,
+    });
     return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
 };
 
-export const sendCoverImage = async (coverImage: string) => {
+export const sendCoverImage = async ({
+  ImageUrl,
+  ImageFileId,
+}: ImagesUploadType) => {
   try {
-    const response = await API.patch("/auth/update-user", { coverImage });
+    const response = await API.patch("/auth/update-user", {
+      coverImage: ImageUrl,
+      coverImageFileId: ImageFileId,
+    });
     return response.data;
   } catch (error) {
     handleAxiosError(error);
@@ -65,6 +78,15 @@ export const updateUser = async (
 ) => {
   try {
     const response = await API.patch("/auth/update-user", data);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const getUserStats = async (username: string) => {
+  try {
+    const response = await API.get(`/user/stats/${username}`);
     return response.data;
   } catch (error) {
     handleAxiosError(error);

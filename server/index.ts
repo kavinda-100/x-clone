@@ -29,7 +29,7 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
   next();
 });
 // ImageKit setup
-const imagekit = new ImageKit({
+export const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGEKITIO_URL_ENDPOINT as string,
   publicKey: process.env.IMAGEKITIO_PUBLIC_KEY as string,
   privateKey: process.env.IMAGEKITIO_PRIVATE_KEY as string,

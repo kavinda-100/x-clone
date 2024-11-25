@@ -17,7 +17,9 @@ export const zodUserSchema = z.object({
     .min(6, { message: "password must be at least 6 character long" })
     .max(12, { message: "password must be at most 12 character long" }),
   profileImage: z.string().url({ message: "Invalid URL" }).optional(),
+  profileImageFileId: z.string().optional(),
   coverImage: z.string().url({ message: "Invalid URL" }).optional(),
+  coverImageFileId: z.string().optional(),
   isEmailVerified: z.boolean().default(false),
   bio: z.string().max(255).optional(),
   location: z.string().max(255).optional(),
@@ -29,17 +31,6 @@ export const zodUserSchema = z.object({
       }),
     )
     .optional(),
-});
-
-export const zodUserSchemaWithOptionalPassword = zodUserSchema.extend({
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" })
-    .max(12, { message: "Password must be at most 12 characters long" })
-    .optional()
-    .refine((val) => val === undefined || val.length >= 6, {
-      message: "Password must be at least 6 characters long",
-    }),
 });
 
 export type zodUserSchemaType = z.infer<typeof zodUserSchema>;
@@ -89,7 +80,9 @@ export const zodUpdateUserSchema = z.object({
     .optional(),
   password: z.string().optional(),
   profileImage: z.string().url({ message: "Invalid URL" }).optional(),
+  profileImageFileId: z.string().optional(),
   coverImage: z.string().url({ message: "Invalid URL" }).optional(),
+  coverImageFileId: z.string().optional(),
   isEmailVerified: z.boolean().default(false),
   bio: z.string().max(255).optional(),
   location: z.string().max(255).optional(),

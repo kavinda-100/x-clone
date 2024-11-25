@@ -62,12 +62,6 @@ const User = () => {
         coverImage={user?.coverImage || PlaceHolderImage.coverImage}
         isSettingsPage={false}
       />
-      <div className={"text-center"}>
-        <h1 className={"text-md font-bold text-muted-foreground"}>
-          {username || ""}
-        </h1>
-        <p className={"text-sm text-muted-foreground"}>{user?.email || ""}</p>
-      </div>
 
       <Tabs defaultValue="feed" className="w-full mt-3">
         <TabsList className={"w-full"}>

@@ -15,6 +15,7 @@ import UserModel from "../user/user.model";
 import { setCookie } from "../../lib/cookies";
 import VerificationModel from "../otherModels/verification.model";
 import { generateMagicLink } from "../../lib";
+import { imagekit } from "../../index";
 
 export const SignUp = async (req: Request, res: Response) => {
   const data = req.body as zodUserSchemaType;
@@ -45,7 +46,9 @@ export const SignUp = async (req: Request, res: Response) => {
       name: data.name,
       userName: data.userName,
       profileImage: data.profileImage,
+      profileImageFileId: data.profileImageFileId,
       coverImage: data.coverImage,
+      coverImageFileId: data.coverImageFileId,
       bio: data.bio,
       location: data.location,
       socialLinks: data.socialLinks,
@@ -219,25 +222,21 @@ export const UpdateUser = async (req: any, res: Response) => {
       return;
     }
     // check if the email is already in use
-    if (data.email) {
-      if (data.email !== user.email) {
-        const isEmailInUse = await UserModel.findOne({ email: data.email });
-        if (isEmailInUse) {
-          errorResponse(res, 400, "Email already in use");
-          return;
-        }
+    if (data.email && data.email !== user.email) {
+      const isEmailInUse = await UserModel.findOne({ email: data.email });
+      if (isEmailInUse) {
+        errorResponse(res, 400, "Email already in use");
+        return;
       }
     }
     // check if the username is already in use
-    if (data.userName) {
-      if (data.userName !== user.userName) {
-        const isUserNameInUse = await UserModel.findOne({
-          userName: data.userName,
-        });
-        if (isUserNameInUse) {
-          errorResponse(res, 400, "Username already in use");
-          return;
-        }
+    if (data.userName && data.userName !== user.userName) {
+      const isUserNameInUse = await UserModel.findOne({
+        userName: data.userName,
+      });
+      if (isUserNameInUse) {
+        errorResponse(res, 400, "Username already in use");
+        return;
       }
     }
     // hash the password if provided
@@ -248,17 +247,47 @@ export const UpdateUser = async (req: any, res: Response) => {
       }
       user.password = await bcryptjs.hash(data.password, 10);
     }
+    // delete the old profile image if a new one is provided
+    if (
+      data.profileImage &&
+      data.profileImageFileId &&
+      user.profileImageFileId
+    ) {
+      await imagekit.deleteFile(user.profileImageFileId);
+      console.log("deleted old profile image");
+    }
+    // delete the old cover image if a new one is provided
+    if (data.coverImage && data.coverImageFileId && user.coverImageFileId) {
+      await imagekit.deleteFile(user.coverImageFileId);
+      console.log("deleted old cover image");
+    }
     // update the user
-    user.name = data.name || user.name;
-    user.userName = data.userName || user.userName;
-    user.profileImage = data.profileImage || user.profileImage;
-    user.coverImage = data.coverImage || user.coverImage;
-    user.bio = data.bio || user.bio;
-    user.location = data.location || user.location;
-    user.socialLinks = data.socialLinks || user.socialLinks;
-    await user.save();
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      ID,
+      {
+        $set: {
+          name: data.name || user.name,
+          userName: data.userName || user.userName,
+          profileImage: data.profileImage || user.profileImage,
+          profileImageFileId:
+            data.profileImageFileId || user.profileImageFileId,
+          coverImage: data.coverImage || user.coverImage,
+          coverImageFileId: data.coverImageFileId || user.coverImageFileId,
+          bio: data.bio || user.bio,
+          location: data.location || user.location,
+          socialLinks: data.socialLinks || user.socialLinks,
+          password: data.password || user.password,
+        },
+      },
+      { new: true },
+    );
+    // if user is not updated
+    if (!updatedUser) {
+      errorResponse(res, 400, "User not updated");
+      return;
+    }
     // remove the password from the response
-    const { password, ...userData } = user.toObject();
+    const { password, ...userData } = updatedUser?.toObject();
     // send the response
     successResponse(res, 200, "User updated successfully", userData);
   } catch (e: Error | any) {

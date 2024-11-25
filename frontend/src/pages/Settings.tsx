@@ -1,10 +1,8 @@
-import { useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostType } from "../types";
 import { useEffect, useState } from "react";
-import { UserType } from "@shared/types";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getUserByUsername } from "../api/users";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { getUserByUsername, getUserStats } from "../api/users";
 import UserBanner from "../components/UserBanner";
 import { PlaceHolderImage } from "../static";
 import UserFeed from "../components/tabs/user/UserFeed";
@@ -12,13 +10,37 @@ import UserSettings from "../components/tabs/settings/UserSettings";
 import UserFollowers from "../components/tabs/user/UserFollowers";
 import UserFollowing from "../components/tabs/user/UserFollowing";
 import UserLiked from "../components/tabs/user/UserLiked";
-import { CalendarDays } from "lucide-react";
-import { capitalizeFirstLetter, formatJoinDate } from "../lib/utils";
+import { useUserStore } from "../store/useUserStore";
 
 const Settings = () => {
-  const { username } = useParams();
-  const [user, setUser] = useState<UserType | null>(null);
   const [posts, setPosts] = useState<PostType[]>([]);
+  const {
+    user,
+    totalLikes,
+    totalFollowers,
+    totalFollowing,
+    setTotalFollowers,
+    setTotalFollowing,
+    setTotalLikes,
+  } = useUserStore();
+
+  const {
+    data: stats,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useQuery({
+    queryKey: ["userStats", user?.userName],
+    queryFn: async () => getUserStats(user?.userName || ""),
+  });
+  console.log("stats", stats?.data);
+  useEffect(() => {
+    if (!isLoading && !isError && isSuccess) {
+      setTotalFollowers(stats?.data.totalFollowers);
+      setTotalFollowing(stats?.data.totalFollowings);
+      setTotalLikes(stats?.data.totalLikes);
+    }
+  }, []);
 
   const {
     data,
@@ -28,9 +50,9 @@ const Settings = () => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["userByUserName", username],
+    queryKey: ["userByUserName", user?.userName],
     queryFn: async ({ pageParam }) =>
-      getUserByUsername({ userName: username || "", pageParam }),
+      getUserByUsername({ userName: user?.userName || "", pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       // console.log("lastPage", lastPage);
@@ -39,13 +61,14 @@ const Settings = () => {
     },
   });
 
-  console.log("posts", posts);
-  console.log("user", user);
+  // console.log("posts", posts);
+  // console.log("user", user);
   useEffect(() => {
     // get the user data from the first page and set it to the state
-    if (data && data.pages[0]?.data.user) {
-      setUser(data.pages[0]?.data.user);
-    }
+    // I dont want user data to be set here because it will override the user data from the store
+    // if (data && data.pages[0]?.data.user) {
+    //   setUser(data.pages[0]?.data.user);
+    // }
 
     // get the posts from the first page and set it to the state
     if (data && data.pages[0]?.data.posts) {
@@ -59,25 +82,14 @@ const Settings = () => {
         profileImage={user?.profileImage || PlaceHolderImage.profileImage}
         coverImage={user?.coverImage || PlaceHolderImage.coverImage}
         isSettingsPage={true}
+        userName={user?.userName || ""}
+        email={user?.email || ""}
+        bio={user?.bio || ""}
+        createdAt={user?.createdAt || ""}
+        totalFollowers={totalFollowers}
+        totalFollowing={totalFollowing}
+        totalLikes={totalLikes}
       />
-      <div className={"w-full"}>
-        <h1 className={"text-md lg:text-lg font-bold text-muted-foreground"}>
-          {capitalizeFirstLetter(username || "") || ""}
-        </h1>
-        <p className={"text-sm text-muted-foreground"}>{user?.email || ""}</p>
-        <p className={"text-sm font-semibold text-muted-foreground mt-2"}>
-          {user?.bio || "No bio"}
-        </p>
-        <div className={"mt-2 w-full"}>
-          <div className={"flex gap-3 justify-start items-center"}>
-            <CalendarDays className={"size-5"} />
-            <p className={"text-sm text-muted-foreground"}>
-              {formatJoinDate(user?.createdAt || "") || ""}
-            </p>
-          </div>
-        </div>
-      </div>
-      {/*  tabs */}
       <Tabs defaultValue="setting" className="w-full mt-3">
         <TabsList className={"w-full"}>
           <TabsTrigger value="setting" className={"w-full"}>

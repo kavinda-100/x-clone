@@ -26,3 +26,8 @@ export type commentType = {
     profileImage: string;
   };
 };
+
+export type ImagesUploadType = {
+  ImageUrl: string;
+  ImageFileId: string;
+};

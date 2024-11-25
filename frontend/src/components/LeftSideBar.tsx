@@ -8,12 +8,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useUserStore } from "../store/useUserStore";
 
 const LeftSideBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUserStore();
 
   return (
     <>
@@ -38,7 +36,7 @@ const LeftSideBar = () => {
           </Button>
           <Button
             variant={location.pathname === "/setting" ? "secondary" : "ghost"}
-            onClick={() => navigate(`/setting/${user?.userName}`)}
+            onClick={() => navigate(`/setting`)}
             className={"w-full flex gap-2"}
           >
             <Settings />
@@ -55,7 +53,6 @@ export default LeftSideBar;
 export const LeftSideBarMobile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUserStore();
   return (
     <Sheet>
       <SheetTrigger>
@@ -85,7 +82,7 @@ export const LeftSideBarMobile = () => {
             </Button>
             <Button
               variant={location.pathname === "/setting" ? "secondary" : "ghost"}
-              onClick={() => navigate(`/setting/${user?.userName}`)}
+              onClick={() => navigate(`/setting`)}
               className={"w-full flex justify-start items-center gap-2"}
             >
               <Settings />
