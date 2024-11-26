@@ -1,7 +1,7 @@
 import { PostType } from "../../../types";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
-import PostSkeleton from "../../scelletons/PostSkeleton";
+import PostSkeleton from "../../Skeletons/PostSkeleton";
 import Post from "../../Post";
 
 type UserFeedProps = {
@@ -11,6 +11,7 @@ type UserFeedProps = {
   isFetchingNextPage: boolean;
   error: Error | any;
   fetchNextPage: () => void;
+  message?: string;
 };
 
 const UserFeed = ({
@@ -20,6 +21,7 @@ const UserFeed = ({
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
+  message,
 }: UserFeedProps) => {
   const { ref, inView } = useInView();
 
@@ -61,7 +63,7 @@ const UserFeed = ({
         status === "success" && posts.length === 0 && (
           <div className={"w-full h-auto text-center"}>
             <p className={"text-muted-foreground"}>
-              User has not posted anything yet
+              {message || "User has not posted anything yet."}
             </p>
           </div>
         )

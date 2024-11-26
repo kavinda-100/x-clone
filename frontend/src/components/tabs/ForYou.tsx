@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAllPosts } from "../../api/post";
 import Post from "../Post";
 import { PostType } from "../../types";
-import PostSkeleton from "../scelletons/PostSkeleton";
+import PostSkeleton from "../Skeletons/PostSkeleton";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 

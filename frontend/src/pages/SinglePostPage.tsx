@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getSinglePost } from "../api/post";
-import PostSkeleton from "../components/scelletons/PostSkeleton";
+import PostSkeleton from "../components/Skeletons/PostSkeleton";
 import { commentType, PostType } from "../types";
 import Post from "../components/Post";
 import Comments from "../components/Comments";
@@ -11,7 +11,7 @@ const SinglePostPage = () => {
 
   const { data, isSuccess, isLoading, isError, error } = useQuery({
     queryKey: ["user", postId],
-    queryFn: () => getSinglePost(postId),
+    queryFn: () => getSinglePost(postId || ""),
   });
   console.log("single post data ", data);
   const post: PostType = data?.data?.data?.post;

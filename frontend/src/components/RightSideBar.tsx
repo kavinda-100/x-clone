@@ -1,7 +1,7 @@
 import { UserType } from "@shared/types";
 import { useQuery } from "@tanstack/react-query";
 import { getRecommendUsers } from "../api/users";
-import RecomendedUserScelleton from "./scelletons/RecomendedUserScelleton";
+import RecomendedUserScelleton from "./Skeletons/RecomendedUserScelleton";
 import UserCard from "./UserCard";
 
 const RightSideBar = () => {

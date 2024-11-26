@@ -31,3 +31,27 @@ export type ImagesUploadType = {
   ImageUrl: string;
   ImageFileId: string;
 };
+
+export type FollowerUserType = {
+  _id: string;
+  follower_user_id: {
+    _id: string;
+    userName: string;
+    profileImage: string;
+  };
+  following_user_id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FollowingUserType = {
+  _id: string;
+  follower_user_id: string;
+  following_user_id: {
+    _id: string;
+    userName: string;
+    profileImage: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+};

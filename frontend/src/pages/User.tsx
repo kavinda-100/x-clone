@@ -20,6 +20,7 @@ const User = () => {
   const {
     data,
     status,
+    isSuccess,
     error,
     fetchNextPage,
     hasNextPage,
@@ -53,7 +54,7 @@ const User = () => {
     if (data && data.pages[0]?.data.posts) {
       setPosts(data.pages[0]?.data.posts);
     }
-  }, []);
+  }, [isSuccess]);
 
   return (
     <div className={"w-full h-auto p-2"}>
@@ -89,10 +90,12 @@ const User = () => {
           />
         </TabsContent>
         <TabsContent value="followers">
-          <UserFollowers />
+          {/* <UserFollowers /> */}
+          <p>user followers</p>
         </TabsContent>
         <TabsContent value="following">
-          <UserFollowing />
+          {/*<UserFollowing />*/}
+          <p>user following</p>
         </TabsContent>
         <TabsContent value="liked">
           <UserLiked />

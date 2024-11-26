@@ -92,3 +92,43 @@ export const getUserStats = async (username: string) => {
     handleAxiosError(error);
   }
 };
+
+export const getUserFollowers = async ({
+  userName,
+  pageParam,
+}: GetUserByUsernameResponse) => {
+  try {
+    const response = await API.get(
+      `/user/followers/${userName}?page=${pageParam}`,
+    );
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const getUserFollowings = async ({
+  userName,
+  pageParam,
+}: GetUserByUsernameResponse) => {
+  try {
+    const response = await API.get(
+      `/user/following/${userName}?page=${pageParam}`,
+    );
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const getUserLikedPosts = async ({
+  userName,
+  pageParam,
+}: GetUserByUsernameResponse) => {
+  try {
+    const response = await API.get(`/user/liked/${userName}?page=${pageParam}`);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};

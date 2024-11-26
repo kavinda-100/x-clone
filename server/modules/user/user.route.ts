@@ -18,13 +18,13 @@ route.get("/me", authMiddleware, getMe);
 // localhost:5000/api/v1/user/recommend
 route.get("/recommend", authMiddleware, getRecommendUsers);
 // get user followers
-// localhost:5000/api/v1/user/followers/:username
+// localhost:5000/api/v1/user/followers/:username?page=1
 route.get("/followers/:username", authMiddleware, getUserFollowers);
 // get user following
-// localhost:5000/api/v1/user/following/:username
+// localhost:5000/api/v1/user/following/:username?page=1
 route.get("/following/:username", authMiddleware, getUserFollowing);
 // get user liked posts
-// localhost:5000/api/v1/user/liked/:username
+// localhost:5000/api/v1/user/liked/:username?page=1
 route.get("/liked/:username", authMiddleware, getUserLikedPosts);
 // get user stats
 // localhost:5000/api/v1/user/stats/:username
