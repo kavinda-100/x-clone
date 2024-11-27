@@ -138,6 +138,7 @@ export const getUserLikedPosts = async (
 
     const likedPosts = await LikeUnlikeModel.find({ userId: user._id })
       .populate("postId")
+      .populate("userId", "userName profileImage")
       .skip(skip)
       .limit(limit);
 

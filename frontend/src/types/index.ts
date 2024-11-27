@@ -55,3 +55,26 @@ export type FollowingUserType = {
   createdAt: string;
   updatedAt: string;
 };
+
+type PostDetailsType = {
+  _id: string;
+  title: string;
+  content: string;
+  image_url?: string;
+  video_url?: string;
+  userId: {
+    _id: string;
+    userName: string;
+    profileImage: string;
+  };
+  likes: number;
+  comments: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SelectedUserPostType = {
+  _id: string;
+  postId: PostDetailsType;
+  userId: string;
+};

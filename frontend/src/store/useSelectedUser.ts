@@ -1,9 +1,13 @@
 import { create } from "zustand/react";
 import { UserType } from "@shared/types";
-import { FollowerUserType, FollowingUserType, PostType } from "../types";
+import {
+  FollowerUserType,
+  FollowingUserType,
+  SelectedUserPostType,
+} from "../types";
 
 type selectedUserType = {
-  selectedUser: null | UserType;
+  selectedUser: UserType | null;
   totalFollowers: number;
   totalFollowing: number;
   totalLikes: number;
@@ -16,8 +20,8 @@ type selectedUserType = {
   setFollowers: (Followers: FollowerUserType[]) => void;
   setFollowing: (Following: FollowingUserType[]) => void;
   removeFollowing: (followerUserId: string) => void;
-  userLikedPosts: PostType[];
-  setUserLikedPosts: (userLikedPosts: PostType[]) => void;
+  userLikedPosts: SelectedUserPostType[];
+  setUserLikedPosts: (userLikedPosts: SelectedUserPostType[]) => void;
 };
 
 export const useSelectedUser = create<selectedUserType>((set) => ({
@@ -29,7 +33,7 @@ export const useSelectedUser = create<selectedUserType>((set) => ({
   Following: [],
   userLikedPosts: [],
 
-  setSelectedUser: (user) => set({ user }),
+  setSelectedUser: (user) => set({ selectedUser: user }),
   setTotalFollowers: (totalFollowers) => set({ totalFollowers }),
   setTotalFollowing: (totalFollowing) => set({ totalFollowing }),
   setTotalLikes: (totalLikes) => set({ totalLikes }),
@@ -38,7 +42,7 @@ export const useSelectedUser = create<selectedUserType>((set) => ({
   removeFollowing: (followerUserId) =>
     set((state) => ({
       Following: state.Following.filter(
-        (following) => following.following_user_id !== followerUserId,
+        (following) => following.follower_user_id !== followerUserId,
       ),
     })),
   setUserLikedPosts: (userLikedPosts) => set({ userLikedPosts }),

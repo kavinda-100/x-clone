@@ -44,13 +44,13 @@ const UserFollowers = ({
     onSuccess: (data) => {
       // console.log("data in follow", data);
       queryClient.invalidateQueries({
-        queryKey: ["recommend-for-you", user.userName],
+        queryKey: ["recommend-for-you", user?.userName],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userFollowers", user.userName],
+        queryKey: ["userFollowers", user?.userName],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userFollowings", user.userName],
+        queryKey: ["userFollowings", user?.userName],
       });
       toast.success(data?.message || "successfully");
     },

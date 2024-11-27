@@ -17,6 +17,7 @@ import UserFollowers from "../components/tabs/user/UserFollowers";
 import UserFollowing from "../components/tabs/user/UserFollowing";
 import { useUserStore } from "../store/useUserStore";
 import { useSelectedUser } from "../store/useSelectedUser";
+import UserLiked from "../components/tabs/user/UserLiked";
 
 const Settings = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -36,7 +37,7 @@ const Settings = () => {
   } = useSelectedUser();
 
   useEffect(() => {
-    setSelectedUser(user);
+    if (user) setSelectedUser(user);
   }, []);
 
   //TODO: for getting user stats
@@ -95,7 +96,7 @@ const Settings = () => {
   } = useInfiniteQuery({
     queryKey: ["userFollowers", user?.userName],
     queryFn: async ({ pageParam }) =>
-      getUserFollowers({ userName: user?.userName, pageParam }),
+      getUserFollowers({ userName: user?.userName || "", pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.data.length > 0 ? allPages.length + 1 : undefined;
@@ -120,7 +121,7 @@ const Settings = () => {
   } = useInfiniteQuery({
     queryKey: ["userFollowings", user?.userName],
     queryFn: async ({ pageParam }) =>
-      getUserFollowings({ userName: user?.userName, pageParam }),
+      getUserFollowings({ userName: user?.userName || "", pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.data.length > 0 ? allPages.length + 1 : undefined;
@@ -141,11 +142,10 @@ const Settings = () => {
     fetchNextPage: fetchNextPageLiked,
     hasNextPage: hasNextPageLiked,
     isFetchingNextPage: isFetchingNextPageLiked,
-    refetch: refetchLiked,
   } = useInfiniteQuery({
     queryKey: ["userLikedPosts", user?.userName],
     queryFn: async ({ pageParam }) =>
-      getUserLikedPosts({ userName: user?.userName, pageParam }),
+      getUserLikedPosts({ userName: user?.userName || "", pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.data.length > 0 ? allPages.length + 1 : undefined;
@@ -156,7 +156,7 @@ const Settings = () => {
       setUserLikedPosts(likedPosts?.pages[0]?.data);
     }
   }, [likedIsSuccess]);
-  console.log("likedPosts", userLikedPosts);
+  // console.log("likedPosts", userLikedPosts);
 
   return (
     <div className={"w-full h-auto p-2"}>
@@ -205,7 +205,6 @@ const Settings = () => {
         </TabsContent>
         <TabsContent value="followers">
           <UserFollowers
-            userName={user?.userName || ""}
             fetchNextPage={fetchNextPageFollowers}
             hasNextPage={hasNextPageFollowers}
             isFetchingNextPage={isFetchingNextPageFollowers}
@@ -225,7 +224,7 @@ const Settings = () => {
           />
         </TabsContent>
         <TabsContent value="liked">
-          <UserFeed
+          <UserLiked
             posts={userLikedPosts}
             status={likedStatus}
             hasNextPage={hasNextPageLiked}

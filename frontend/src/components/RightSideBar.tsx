@@ -39,6 +39,7 @@ const RightSideBar = () => {
                 data?.data.recommendedUsers.map((user: UserType) => {
                   return (
                     <UserCard
+                      key={user?._id}
                       user={user}
                       followingUsers={data?.data.followingUsers}
                     />

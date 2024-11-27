@@ -1,30 +1,35 @@
-import { PostType } from "../types";
+import { SelectedUserPostType } from "../../../types";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { formatDateToRelativeTime } from "../lib/utils";
-import { Button } from "./ui/button";
-import { MessageSquareMore, ThumbsUp } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+} from "../../ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { formatDateToRelativeTime } from "../../../lib/utils";
 import { IKImage, IKVideo } from "imagekitio-react";
+import { Button } from "../../ui/button";
+import { MessageSquareMore, ThumbsUp } from "lucide-react";
 
-const Post = ({
+const UserLikedPost = ({
   _id,
-  title,
-  content,
-  image_url,
-  video_url,
-  likes,
-  comments,
-  createdAt,
-  userId: { _id: userId, userName, profileImage },
-}: PostType) => {
+  userId,
+  postId: {
+    _id: postId,
+    title,
+    content,
+    image_url,
+    video_url,
+    userId: { _id: postUserId, userName, profileImage },
+    likes,
+    comments,
+    createdAt: postCreatedAt,
+  },
+}: SelectedUserPostType) => {
   const navigate = useNavigate();
+  console.log(postUserId, postCreatedAt, postId);
 
   const postClickHandler = (postId: string) => {
     navigate(`/post/${postId}`);
@@ -33,7 +38,6 @@ const Post = ({
   const userClickHandler = (username: string) => {
     navigate(`/user/${username}`);
   };
-
   return (
     <Card className={"w-full mb-1 cursor-pointer"}>
       <CardHeader>
@@ -58,7 +62,7 @@ const Post = ({
               "text-muted-foreground text-sm text-pretty font-thin text-right"
             }
           >
-            {formatDateToRelativeTime(createdAt)}
+            {formatDateToRelativeTime(postCreatedAt)}
           </p>
         </div>
       </CardHeader>
@@ -121,4 +125,4 @@ const Post = ({
   );
 };
 
-export default Post;
+export default UserLikedPost;
