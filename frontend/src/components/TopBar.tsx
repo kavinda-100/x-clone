@@ -15,6 +15,7 @@ import { searchUsers } from "../api/users";
 import { UserSearchType } from "../types";
 import SearchResultCard from "./SearchResultCard";
 import { ThreeDotSimpleLoader } from "./ThreeDotSimpleLoader";
+import CratePostForm from "../form/CratePostForm";
 
 const TopBar = () => {
   const [open, setOpen] = useState(false);
@@ -65,7 +66,21 @@ const TopBar = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <Button>Create Post</Button>
+      <div>
+        <Dialog>
+          <DialogTrigger>
+            <Button>Create Post</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Crate a new post</DialogTitle>
+            </DialogHeader>
+            <div className={"w-full h-auto"}>
+              <CratePostForm />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };

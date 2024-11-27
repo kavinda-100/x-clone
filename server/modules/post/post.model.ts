@@ -14,7 +14,15 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    image_url_fileId: {
+      type: String,
+      required: false,
+    },
     video_url: {
+      type: String,
+      required: false,
+    },
+    video_url_fileId: {
       type: String,
       required: false,
     },
