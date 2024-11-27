@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { IKImage, IKVideo } from "imagekitio-react";
 
 const Post = ({
-  _id,
+  _id: postId,
   title,
   content,
   image_url,
@@ -22,7 +22,11 @@ const Post = ({
   likes,
   comments,
   createdAt,
-  userId: { _id: userId, userName, profileImage },
+  user: { _id: userId, userName, profileImage } = {
+    _id: "",
+    userName: "",
+    profileImage: "",
+  },
 }: PostType) => {
   const navigate = useNavigate();
 
@@ -45,7 +49,7 @@ const Post = ({
             <Avatar>
               <AvatarImage
                 src={profileImage}
-                alt={`${userName}${_id}${userId}`}
+                alt={`${userName}${postId}${userId}`}
               />
               <AvatarFallback>
                 {userName ? userName[0].toUpperCase() : ""}
@@ -65,7 +69,7 @@ const Post = ({
       <CardContent>
         <div
           className={"flex-col gap-2 mb-2"}
-          onClick={() => postClickHandler(_id)}
+          onClick={() => postClickHandler(postId)}
         >
           <h1 className={"text-md font-bold hover:opacity-55"}>{title}</h1>
           <p className={"font-light text-sm hover:opacity-55"}>{content}</p>

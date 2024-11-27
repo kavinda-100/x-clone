@@ -50,7 +50,7 @@ const Settings = () => {
     queryKey: ["userStats", user?.userName],
     queryFn: async () => getUserStats(user?.userName || ""),
   });
-  console.log("stats", stats?.data);
+  // console.log("stats", stats?.data);
   useEffect(() => {
     if (!isLoading && !isError && isSuccess) {
       setTotalFollowers(stats?.data.totalFollowers);
@@ -157,6 +157,8 @@ const Settings = () => {
     }
   }, [likedIsSuccess]);
   // console.log("likedPosts", userLikedPosts);
+
+  // console.log("posts in settings", posts);
 
   return (
     <div className={"w-full h-auto p-2"}>

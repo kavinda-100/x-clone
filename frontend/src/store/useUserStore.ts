@@ -1,6 +1,5 @@
 import { create } from "zustand/react";
 import { UserType } from "@shared/types";
-import { FollowerUserType, FollowingUserType, PostType } from "../types";
 
 type useUserStoreType = {
   user: null | UserType;

@@ -7,7 +7,7 @@ export type PostType = {
   likes: number;
   comments: number;
   createdAt: string;
-  userId: {
+  user: {
     _id: string;
     userName: string;
     profileImage: string;
@@ -62,11 +62,7 @@ type PostDetailsType = {
   content: string;
   image_url?: string;
   video_url?: string;
-  userId: {
-    _id: string;
-    userName: string;
-    profileImage: string;
-  };
+  userId: string;
   likes: number;
   comments: number;
   createdAt: string;
@@ -76,5 +72,16 @@ type PostDetailsType = {
 export type SelectedUserPostType = {
   _id: string;
   postId: PostDetailsType;
-  userId: string;
+  userId: {
+    _id: string;
+    userName: string;
+    profileImage: string;
+  };
+};
+
+export type UserSearchType = {
+  _id: string;
+  name: string;
+  userName: string;
+  profileImage: string;
 };

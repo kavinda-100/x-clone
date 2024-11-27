@@ -168,8 +168,8 @@ const User = () => {
       setUserLikedPosts(likedPosts?.pages[0]?.data);
     }
   }, [likedPostsSuccess]);
-  console.log("likedPosts", likedPosts?.pages[0]?.data);
-  console.log("likedPosts from store", userLikedPosts);
+  // console.log("likedPosts", likedPosts?.pages[0]?.data);
+  // console.log("likedPosts from store", userLikedPosts);
 
   return (
     <div className={"w-full h-auto p-2"}>

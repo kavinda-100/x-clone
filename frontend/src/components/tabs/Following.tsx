@@ -60,7 +60,7 @@ const Following = () => {
               likes={post.likes}
               comments={post.comments}
               createdAt={post.createdAt}
-              userId={post.userId}
+              user={post.user}
             />
           )),
         )}

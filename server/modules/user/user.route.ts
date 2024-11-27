@@ -6,6 +6,7 @@ import {
   getUserFollowing,
   getUserLikedPosts,
   getUserStats,
+  searchUsers,
 } from "./user.controller";
 import authMiddleware from "../../middleware/authMiddleware";
 
@@ -29,5 +30,8 @@ route.get("/liked/:username", authMiddleware, getUserLikedPosts);
 // get user stats
 // localhost:5000/api/v1/user/stats/:username
 route.get("/stats/:username", authMiddleware, getUserStats);
+// search users
+// localhost:5000/api/v1/user/search?search=abc
+route.get("/search", authMiddleware, searchUsers);
 
 export default route;

@@ -132,3 +132,12 @@ export const getUserLikedPosts = async ({
     handleAxiosError(error);
   }
 };
+
+export const searchUsers = async (search: string) => {
+  try {
+    const response = await API.get(`/user/search?search=${search}`);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};

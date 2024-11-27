@@ -23,11 +23,40 @@ export const getAllPosts = async (req: Request, res: Response) => {
 
   try {
     // Fetch posts from the database with pagination and sorting by creation date in descending order
-    const posts = await PostModel.find()
-      .skip(skip)
-      .limit(Number(limit))
-      .sort({ createdAt: -1 })
-      .populate("userId", "userName profileImage");
+    // const posts = await PostModel.find()
+    //   .skip(skip)
+    //   .limit(Number(limit))
+    //   .sort({ createdAt: -1 })
+    //   .populate("userId", "userName profileImage");
+    const posts = await PostModel.aggregate([
+      { $sample: { size: Number(limit) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          content: 1,
+          image_url: 1,
+          video_url: 1,
+          userId: 1,
+          likes: 1,
+          comments: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "user._id": 1,
+          "user.userName": 1,
+          "user.profileImage": 1,
+        },
+      },
+    ]);
     // Send a success response with the fetched posts
     successResponse(res, 200, "all posts", posts);
   } catch (e: Error | any) {
@@ -62,11 +91,42 @@ export const getFollowingPosts = async (req: any, res: Response) => {
     const posts = await Promise.all(
       following.map(async (follow) => {
         // add await if function not working.
-        return PostModel.find({ userId: follow.following_user_id })
-          .skip(skip)
-          .limit(Number(limit))
-          .sort({ createdAt: -1 })
-          .populate("userId", "userName profileImage");
+        //   return PostModel.find({ userId: follow.following_user_id })
+        //     .skip(skip)
+        //     .limit(Number(limit))
+        //     .sort({ createdAt: -1 })
+        //     .populate("userId", "userName profileImage");
+        // }),
+        return PostModel.aggregate([
+          { $match: { userId: follow.following_user_id } },
+          { $sample: { size: Number(limit) } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          { $unwind: "$user" },
+          {
+            $project: {
+              _id: 1,
+              title: 1,
+              content: 1,
+              image_url: 1,
+              video_url: 1,
+              userId: 1,
+              likes: 1,
+              comments: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              "user._id": 1,
+              "user.userName": 1,
+              "user.profileImage": 1,
+            },
+          },
+        ]);
       }),
     );
     // Flatten the array of posts
@@ -113,11 +173,36 @@ export const getFollowingsPostsByUserName = async (
       return;
     }
     // fetch posts of the following users
-    const posts = await PostModel.find({ userId: user._id })
-      .skip(skip)
-      .limit(Number(limit))
-      .sort({ createdAt: -1 })
-      .populate("userId", "userName profileImage");
+    const posts = await PostModel.aggregate([
+      { $match: { userId: user._id } },
+      { $sample: { size: Number(limit) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          content: 1,
+          image_url: 1,
+          video_url: 1,
+          userId: 1,
+          likes: 1,
+          comments: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "user._id": 1,
+          "user.userName": 1,
+          "user.profileImage": 1,
+        },
+      },
+    ]);
     // remove sensitive data from user object
     const { password, ...userData } = user.toObject();
     // send response

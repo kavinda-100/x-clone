@@ -28,8 +28,8 @@ const UserFollowers = ({
   const { ref, inView } = useInView();
   const queryClient = useQueryClient();
 
-  console.log("UserFollowers", Followers);
-  console.log("UserFollowing", Following);
+  // console.log("UserFollowers", Followers);
+  // console.log("UserFollowing", Following);
 
   useEffect(() => {
     if (inView && hasNextPage) {

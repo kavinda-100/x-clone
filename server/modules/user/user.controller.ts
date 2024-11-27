@@ -182,3 +182,20 @@ export const getUserStats = async (
     next(e);
   }
 };
+
+export const searchUsers = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { search } = req.query;
+    const users = await UserModel.find({
+      userName: { $regex: `^${search}`, $options: "i" },
+    }).select("name userName profileImage _id");
+
+    successResponse(res, 200, "Users fetched successfully", users);
+  } catch (e) {
+    next(e);
+  }
+};

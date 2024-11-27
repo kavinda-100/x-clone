@@ -15,14 +15,14 @@ import { MessageSquareMore, ThumbsUp } from "lucide-react";
 
 const UserLikedPost = ({
   _id,
-  userId,
+  userId: { _id: postUserId, userName, profileImage },
   postId: {
     _id: postId,
     title,
     content,
     image_url,
     video_url,
-    userId: { _id: postUserId, userName, profileImage },
+    userId,
     likes,
     comments,
     createdAt: postCreatedAt,
