@@ -16,36 +16,64 @@ import { useRef, useState } from "react";
 import { IKUpload, IKImage, IKVideo } from "imagekitio-react";
 import { ImageUp, Video } from "lucide-react";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPost } from "../api/post";
+import { useUserStore } from "../store/useUserStore";
 
-const formSchema = z.object({
+export const formSchema = z.object({
+  userId: z.string({ message: "User id is required" }),
   title: z.string({ message: "Title is required" }),
   content: z.string({ message: "Content is required" }),
-  image_url: z.string().url({ message: "Invalid URL" }),
-  image_url_fileId: z.string(),
-  video_url: z.string().url({ message: "Invalid URL" }),
-  video_url_fileId: z.string(),
+  image_url: z.string().url({ message: "Invalid URL" }).optional(),
+  image_url_fileId: z.string().optional(),
+  video_url: z.string().url({ message: "Invalid URL" }).optional(),
+  video_url_fileId: z.string().optional(),
 });
 
 const CratePostForm = () => {
+  const { user } = useUserStore();
+
   const ImageRef = useRef<any | null>(null);
   const videoRef = useRef<any | null>(null);
 
   const [imageFile, setImageFile] = useState<string | null>(null);
   const [videoFile, setVideoFile] = useState<string | null>(null);
 
+  const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      content: "",
+      userId: user?._id || undefined,
+      title: undefined,
+      content: undefined,
+      image_url: undefined,
+      image_url_fileId: undefined,
+      video_url: undefined,
+      video_url_fileId: undefined,
+    },
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: z.infer<typeof formSchema>) => createPost(data),
+    onSuccess: (data) => {
+      console.log("Post created successfully", data);
+      toast.success("Post created successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["userByUserName", user?.userName],
+      });
+    },
+    onError: (error) => {
+      console.log("Error creating post", error);
+      toast.error(error.message || "Error creating post");
     },
   });
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    console.log("Form State Error", form.formState.errors);
+    console.log("Form values", values);
+    mutate(values);
   }
 
   // for image upload
@@ -59,7 +87,6 @@ const CratePostForm = () => {
   const imageOnError = (err: any) => {
     console.log("Image upload error", err);
     toast.error("Error uploading image to the cloud");
-    toast.dismiss();
   };
   const imageOnUploadProgress = (progress: any) => {
     console.log("Image upload progress", progress);
@@ -77,12 +104,12 @@ const CratePostForm = () => {
   const videoOnError = (err: any) => {
     console.log("Video upload error", err);
     toast.error("Error uploading video to the cloud");
-    toast.dismiss();
   };
   const videoOnUploadProgress = (progress: any) => {
     console.log("Video upload progress", progress);
     toast.loading("Uploading video to the cloud");
   };
+
   return (
     <div className={"w-full"}>
       <Form {...form}>
@@ -117,13 +144,13 @@ const CratePostForm = () => {
             <ImageUp
               className={"size-fit"}
               onClick={() => {
-                ImageRef.current?.click();
+                ImageRef?.current?.click();
               }}
             />
             <Video
               className={"size-fit"}
               onClick={() => {
-                videoRef.current?.click();
+                videoRef?.current?.click();
               }}
             />
           </div>
@@ -145,7 +172,9 @@ const CratePostForm = () => {
               />
             )}
           </div>
-          <Button type="submit">Create</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Creating post..." : "Create post"}
+          </Button>
         </form>
       </Form>
 
@@ -157,7 +186,7 @@ const CratePostForm = () => {
         isPrivateFile={false}
         useUniqueFileName={true}
         validateFile={(file) => file.size < 3000000}
-        folder={"/post/images"}
+        folder={"/x-clone/post/images"}
         style={{ display: "none" }}
       />
 
@@ -169,7 +198,7 @@ const CratePostForm = () => {
         isPrivateFile={false}
         useUniqueFileName={true}
         validateFile={(file) => file.size < 50000000}
-        folder={"/post/videos"}
+        folder={"/x-clone/post/videos"}
         style={{ display: "none" }}
       />
     </div>

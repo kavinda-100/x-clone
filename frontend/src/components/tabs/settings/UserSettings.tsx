@@ -43,12 +43,12 @@ const UserSettings = () => {
   const form = useForm<z.infer<typeof zodUserSchemaForFrontEnd>>({
     resolver: zodResolver(zodUserSchemaForFrontEnd),
     defaultValues: {
-      name: user?.name || "",
-      email: user?.email || "",
-      userName: user?.userName || "",
-      password: "",
-      bio: user?.bio || "",
-      location: user?.location || "",
+      name: user?.name || undefined,
+      email: user?.email || undefined,
+      userName: user?.userName || undefined,
+      password: undefined,
+      bio: user?.bio || undefined,
+      location: user?.location || undefined,
       socialLinks: user?.socialLinks || [],
     },
   });

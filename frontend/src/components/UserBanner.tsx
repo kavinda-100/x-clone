@@ -165,7 +165,7 @@ const UserBanner = ({
             isPrivateFile={false}
             useUniqueFileName={true}
             validateFile={(file) => file.size < 3000000}
-            folder={"/user/profile"}
+            folder={"/x-clone/user/profile"}
             style={{ display: "none" }}
           />
 
@@ -177,7 +177,7 @@ const UserBanner = ({
             isPrivateFile={false}
             useUniqueFileName={true}
             validateFile={(file) => file.size < 3000000}
-            folder={"/user/profile"}
+            folder={"/x-clone/user/profile"}
             style={{ display: "none" }}
           />
         </div>

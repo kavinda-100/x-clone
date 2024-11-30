@@ -259,16 +259,14 @@ export const createPost = async (req: Request, res: Response) => {
   const data = req.body as zodPostSchemaType;
 
   try {
-    //TODO: upload image and video to cloudinary (data.image_url)
-    const uploadedImage = ""; // image url
-    const uploadedVideo = ""; // video url
-
     // create post
     const newPost = new PostModel({
       title: data.title,
       content: data.content,
-      image_url: data.image_url, // uploadedImage,
-      video_url: data.video_url, // uploadedVideo,
+      image_url: data.image_url,
+      image_url_fileId: data.image_url_fileId,
+      video_url: data.video_url,
+      video_url_fileId: data.video_url_fileId,
       userId: data.userId,
     });
     // save post
