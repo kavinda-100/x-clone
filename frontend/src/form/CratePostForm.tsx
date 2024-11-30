@@ -66,6 +66,9 @@ const CratePostForm = ({ setOpenPost }: CreatePostFormType) => {
       queryClient.invalidateQueries({
         queryKey: ["userByUserName", user?.userName],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["for-you"],
+      });
       setOpenPost(false);
     },
     onError: (error) => {

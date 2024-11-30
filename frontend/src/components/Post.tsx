@@ -60,6 +60,7 @@ const Post = ({
 }: PostType) => {
   const [newComment, setNewComment] = useState("");
   const [allLikes, setAllLikes] = useState<AllLikesByPostIdType[]>([]);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const { user } = useUserStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -148,6 +149,9 @@ const Post = ({
       queryClient.invalidateQueries({
         queryKey: ["userByUserName", user?.userName],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["for-you"],
+      });
     },
     onError: (error) => {
       console.log("error deleting post", error);
@@ -185,7 +189,7 @@ const Post = ({
               {formatDateToRelativeTime(createdAt)}
             </p>
             {userId === user?._id && (
-              <Dialog>
+              <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
                 <DialogTrigger>
                   <Trash className={"size-4 lg:size-5 text-red-600"} />
                 </DialogTrigger>
@@ -197,7 +201,10 @@ const Post = ({
                   </DialogHeader>
                   <div className={"w-full mt-2 flex justify-end"}>
                     <Button
-                      onClick={() => deletePostMutate(postId)}
+                      onClick={() => {
+                        deletePostMutate(postId);
+                        setDeleteOpen(false);
+                      }}
                       variant={"destructive"}
                     >
                       Yes, Delete
