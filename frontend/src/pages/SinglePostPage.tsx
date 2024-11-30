@@ -5,17 +5,38 @@ import PostSkeleton from "../components/Skeletons/PostSkeleton";
 import { commentType, PostType } from "../types";
 import Post from "../components/Post";
 import Comments from "../components/Comments";
+import { useEffect, useState } from "react";
 
 const SinglePostPage = () => {
   const { postId } = useParams();
+  const [post, setPost] = useState<PostType>({
+    _id: "",
+    title: "",
+    content: "",
+    image_url: "",
+    video_url: "",
+    likes: 0,
+    comments: 0,
+    createdAt: new Date().toISOString(),
+    user: {
+      _id: "",
+      userName: "",
+      profileImage: "",
+    },
+  });
+  const [comments, setComments] = useState<commentType[]>([]);
 
   const { data, isSuccess, isLoading, isError, error } = useQuery({
     queryKey: ["user", postId],
     queryFn: () => getSinglePost(postId || ""),
   });
-  console.log("single post data ", data);
-  const post: PostType = data?.data?.data?.post;
-  const comments: commentType[] = data?.data?.data?.comments;
+  // console.log("single post data ", data);
+  useEffect(() => {
+    if (data?.data) {
+      setPost(data.data.post);
+      setComments(data.data.comments);
+    }
+  }, [isSuccess]);
 
   return (
     <div className={"w-full h-auto p-2"}>
@@ -36,9 +57,12 @@ const SinglePostPage = () => {
           likes={post.likes}
           comments={post.comments}
           createdAt={post.createdAt}
-          userId={post.userId}
+          user={post.user}
         />
       )}
+      <div className={"my-3"}>
+        <p className={"text-muted-foreground font-bold"}>Comments</p>
+      </div>
       {comments && comments.length === 0 && (
         <div>
           {/*TODO: add comment box here */}

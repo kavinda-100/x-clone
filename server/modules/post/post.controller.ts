@@ -10,6 +10,7 @@ import CommentModel from "./comment.model";
 import UserModel from "../user/user.model";
 import followersAndFollwingModel from "../followersAndFollwing/followersAndFollwing.model";
 import LikeUnlikeModel from "./LikeUnlike.model";
+import mongoose from "mongoose";
 
 // default page and limit values
 const limit = 10;
@@ -226,11 +227,40 @@ export const getSinglePostByPostID = async (req: Request, res: Response) => {
   const skip = (Number(page) - 1) * Number(limit);
   try {
     // check if post exists
-    const post = await PostModel.findById(postId).populate(
-      "userId",
-      "userName profileImage",
-    );
-    if (!post) {
+    // const post = await PostModel.findById(postId).populate(
+    //     //   "userId",
+    //     //   "userName profileImage",
+    //     // );
+    const post = await PostModel.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(postId) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          content: 1,
+          image_url: 1,
+          video_url: 1,
+          userId: 1,
+          likes: 1,
+          comments: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "user._id": 1,
+          "user.userName": 1,
+          "user.profileImage": 1,
+        },
+      },
+    ]);
+    if (!post || post.length === 0) {
       errorResponse(res, 404, "post not found");
       return;
     }
@@ -244,7 +274,7 @@ export const getSinglePostByPostID = async (req: Request, res: Response) => {
 
     // send response
     successResponse(res, 200, "post data", {
-      post: post,
+      post: post[0],
       comments: comments,
     });
   } catch (e: Error | any) {

@@ -1,4 +1,4 @@
-import { PostType } from "../types";
+import { postCommentType, PostType } from "../types";
 import {
   Card,
   CardContent,
@@ -6,12 +6,25 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatDateToRelativeTime } from "../lib/utils";
 import { Button } from "./ui/button";
 import { MessageSquareMore, ThumbsUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { IKImage, IKVideo } from "imagekitio-react";
+import { Input } from "./ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { likeUnlikePost, postComment } from "../api/post";
+import { toast } from "sonner";
+import { useUserStore } from "../store/useUserStore";
+import { useState } from "react";
 
 const Post = ({
   _id: postId,
@@ -28,6 +41,8 @@ const Post = ({
     profileImage: "",
   },
 }: PostType) => {
+  const [newComment, setNewComment] = useState("");
+  const { user } = useUserStore();
   const navigate = useNavigate();
 
   const postClickHandler = (postId: string) => {
@@ -37,6 +52,53 @@ const Post = ({
   const userClickHandler = (username: string) => {
     navigate(`/user/${username}`);
   };
+
+  // mutation for adding comment
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: postCommentType) => postComment(data),
+    onSuccess: () => {
+      console.log("comment added");
+      toast.success("Comment added");
+    },
+    onError: (error) => {
+      console.log("error adding comment", error);
+      toast.error(error.message || "Error adding comment");
+    },
+  });
+
+  const handleComment = (postId: string) => {
+    const data: postCommentType = {
+      comment: newComment,
+      postId,
+      userId: user?._id || "",
+    };
+    if (data.userId === undefined || data.postId === undefined) {
+      toast.error("Please login to comment or refresh the page");
+      return;
+    }
+    if (
+      data.comment === "" ||
+      data.comment === undefined ||
+      data.comment.length === 0
+    ) {
+      toast.error("Please add a comment");
+      return;
+    }
+    mutate(data);
+  };
+
+  // mutation for liking post
+  const { mutate: likePost, isPending: isLikePostPending } = useMutation({
+    mutationFn: async (postId: string) => likeUnlikePost(postId),
+    onSuccess: (data) => {
+      console.log("post liked", data);
+      toast.success(data?.message || "success");
+    },
+    onError: (error) => {
+      console.log("error liking post", error);
+      toast.error(error.message || "Error liking post");
+    },
+  });
 
   return (
     <Card className={"w-full mb-1 cursor-pointer"}>
@@ -75,11 +137,6 @@ const Post = ({
           <p className={"font-light text-sm hover:opacity-55"}>{content}</p>
         </div>
         {image_url && (
-          // <img
-          //   className={"w-full h-auto max-h-[400px] object-cover rounded-md"}
-          //   src={image_url}
-          //   alt={title}
-          // />
           <IKImage
             className={
               "w-full h-auto max-h-[300px] lg:max-h-[400px] object-cover rounded-md"
@@ -91,11 +148,6 @@ const Post = ({
           />
         )}
         {video_url && (
-          // <video
-          //   src={video_url}
-          //   controls
-          //   className={"w-full h-auto max-h-[400px] object-cover rounded-md"}
-          // />
           <IKVideo
             src={video_url}
             controls={true}
@@ -110,16 +162,37 @@ const Post = ({
           variant={"ghost"}
           size={"lg"}
           className={"flex justify-start items-center"}
+          onClick={() => likePost(postId)}
+          disabled={isLikePostPending}
         >
           {likes} <ThumbsUp className={"size-10"} />
         </Button>
-        <Button
-          variant={"ghost"}
-          size={"lg"}
-          className={"flex justify-start items-center"}
-        >
-          {comments} <MessageSquareMore />
-        </Button>
+        {/* comment area */}
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              variant={"ghost"}
+              size={"lg"}
+              className={"flex justify-start items-center"}
+            >
+              {comments} <MessageSquareMore />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add a comment</DialogTitle>
+            </DialogHeader>
+            <div className={"w-full flex-col gap-3"}>
+              <Input
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder={"Type comment here..."}
+              />
+              <Button onClick={() => handleComment(postId)} className={"mt-3"}>
+                {isPending ? "Adding comment..." : "Add Comment"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   );

@@ -85,3 +85,9 @@ export type UserSearchType = {
   userName: string;
   profileImage: string;
 };
+
+export type postCommentType = {
+  comment: string;
+  postId: string;
+  userId: string;
+};

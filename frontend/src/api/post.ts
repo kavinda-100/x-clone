@@ -2,6 +2,7 @@ import API from "./index";
 import { handleAxiosError } from "./index";
 import { z } from "zod";
 import { formSchema } from "../form/CratePostForm";
+import { postCommentType } from "../types";
 
 type getAllPostType = {
   pageParam: number;
@@ -26,7 +27,8 @@ export const getAllPostsFollowing = async ({ pageParam }: getAllPostType) => {
 
 export const getSinglePost = async (postId: string) => {
   try {
-    return await API.get(`/post/${postId}`);
+    const response = await API.get(`/post/${postId}`);
+    return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
@@ -34,7 +36,26 @@ export const getSinglePost = async (postId: string) => {
 
 export const createPost = async (data: z.infer<typeof formSchema>) => {
   try {
-    return await API.post(`/post`, data);
+    const response = await API.post(`/post`, data);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const postComment = async (data: postCommentType) => {
+  try {
+    const response = await API.post(`/post/comment`, data);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const likeUnlikePost = async (postId: string) => {
+  try {
+    const response = await API.post(`/post/like-unlike/${postId}`);
+    return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
