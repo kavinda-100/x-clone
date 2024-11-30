@@ -36,6 +36,10 @@ const Header = () => {
       navigate("/sign-in");
     },
   });
+
+  const handleLogoClick = () => {
+    navigate("/");
+  };
   return (
     <header
       className={
@@ -46,6 +50,7 @@ const Header = () => {
         className={"size-5 lg:size-10 object-cover"}
         src={theme.theme === "dark" ? "/X_dark.svg" : "X_light.svg"}
         alt={"logo"}
+        onClick={handleLogoClick}
       />
       {/* desktop nav */}
       <div className={"hidden lg:flex justify-center items-center gap-3"}>

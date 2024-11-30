@@ -156,7 +156,7 @@ const Settings = () => {
       setUserLikedPosts(likedPosts?.pages[0]?.data);
     }
   }, [likedIsSuccess]);
-  // console.log("likedPosts", userLikedPosts);
+  console.log("likedPosts", userLikedPosts);
 
   // console.log("posts in settings", posts);
 
