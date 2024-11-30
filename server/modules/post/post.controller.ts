@@ -30,7 +30,6 @@ export const getAllPosts = async (req: Request, res: Response) => {
     //   .sort({ createdAt: -1 })
     //   .populate("userId", "userName profileImage");
     const posts = await PostModel.aggregate([
-      { $sample: { size: Number(limit) } },
       {
         $lookup: {
           from: "users",
@@ -57,6 +56,9 @@ export const getAllPosts = async (req: Request, res: Response) => {
           "user.profileImage": 1,
         },
       },
+      { $sort: { createdAt: -1 } }, // Sort by creation date in descending order
+      { $skip: skip },
+      { $limit: Number(limit) },
     ]);
     // Send a success response with the fetched posts
     successResponse(res, 200, "all posts", posts);
@@ -100,7 +102,6 @@ export const getFollowingPosts = async (req: any, res: Response) => {
         // }),
         return PostModel.aggregate([
           { $match: { userId: follow.following_user_id } },
-          { $sample: { size: Number(limit) } },
           {
             $lookup: {
               from: "users",
@@ -127,6 +128,9 @@ export const getFollowingPosts = async (req: any, res: Response) => {
               "user.profileImage": 1,
             },
           },
+          { $sort: { createdAt: -1 } }, // Sort by creation date in descending order
+          { $skip: skip },
+          { $limit: Number(limit) },
         ]);
       }),
     );
@@ -176,7 +180,6 @@ export const getFollowingsPostsByUserName = async (
     // fetch posts of the following users
     const posts = await PostModel.aggregate([
       { $match: { userId: user._id } },
-      { $sample: { size: Number(limit) } },
       {
         $lookup: {
           from: "users",
@@ -203,6 +206,9 @@ export const getFollowingsPostsByUserName = async (
           "user.profileImage": 1,
         },
       },
+      { $sort: { createdAt: -1 } }, // Sort by creation date in descending order
+      { $skip: skip },
+      { $limit: Number(limit) },
     ]);
     // remove sensitive data from user object
     const { password, ...userData } = user.toObject();

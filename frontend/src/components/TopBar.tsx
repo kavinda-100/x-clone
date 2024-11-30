@@ -19,6 +19,7 @@ import CratePostForm from "../form/CratePostForm";
 
 const TopBar = () => {
   const [open, setOpen] = useState(false);
+  const [openPost, setOpenPost] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 1500);
 
@@ -67,7 +68,7 @@ const TopBar = () => {
         </Dialog>
       </div>
       <div>
-        <Dialog>
+        <Dialog open={openPost} onOpenChange={setOpenPost}>
           <DialogTrigger>
             <Button>Create Post</Button>
           </DialogTrigger>
@@ -76,7 +77,7 @@ const TopBar = () => {
               <DialogTitle>Crate a new post</DialogTitle>
             </DialogHeader>
             <div className={"w-full h-auto"}>
-              <CratePostForm />
+              <CratePostForm setOpenPost={setOpenPost} />
             </div>
           </DialogContent>
         </Dialog>

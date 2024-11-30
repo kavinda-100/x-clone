@@ -12,13 +12,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { IKUpload, IKImage, IKVideo } from "imagekitio-react";
 import { ImageUp, Video } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "../api/post";
 import { useUserStore } from "../store/useUserStore";
+
+type CreatePostFormType = {
+  setOpenPost: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export const formSchema = z.object({
   userId: z.string({ message: "User id is required" }),
@@ -30,7 +34,7 @@ export const formSchema = z.object({
   video_url_fileId: z.string().optional(),
 });
 
-const CratePostForm = () => {
+const CratePostForm = ({ setOpenPost }: CreatePostFormType) => {
   const { user } = useUserStore();
 
   const ImageRef = useRef<any | null>(null);
@@ -62,6 +66,7 @@ const CratePostForm = () => {
       queryClient.invalidateQueries({
         queryKey: ["userByUserName", user?.userName],
       });
+      setOpenPost(false);
     },
     onError: (error) => {
       console.log("Error creating post", error);
