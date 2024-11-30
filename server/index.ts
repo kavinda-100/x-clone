@@ -15,8 +15,6 @@ const app = express();
 // Set the port
 const PORT = process.env.PORT || 5000;
 
-const __dirname = path.resolve();
-
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
