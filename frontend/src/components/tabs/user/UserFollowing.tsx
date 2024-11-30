@@ -40,21 +40,19 @@ const UserFollowing = ({
   const { mutate, isPending } = useMutation({
     mutationFn: async (following_user_id: string) =>
       followUnfollowUser(following_user_id),
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       // console.log("data in follow", data);
       // console.log("variables in follow", variables);
       queryClient.invalidateQueries({
-        queryKey: ["recommend-for-you", user.userName],
+        queryKey: ["recommend-for-you", user?.userName],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userFollowings", user.userName],
+        queryKey: ["userFollowings", user?.userName],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userFollowers", user.userName],
+        queryKey: ["userFollowers", user?.userName],
       });
       toast.success(data?.message || "successfully");
-      // Remove the user from the Followers array in the global store
-      useUserStore.getState().removeFollowing(variables);
     },
     onError: (error) => {
       console.log("error in follow", error);

@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import ImageKit from "imagekit";
+import path from "path";
 
 import { connectDB, disconnectDB } from "./lib/db";
 import { errorHandler } from "./lib/handellers/errorHandeller";
@@ -13,6 +14,8 @@ dotenv.config();
 const app = express();
 // Set the port
 const PORT = process.env.PORT || 5000;
+
+const __dirname = path.resolve();
 
 // Middlewares
 app.use(express.json());
@@ -41,13 +44,20 @@ app.get("/auth", function (req: Request, res: Response) {
 });
 
 // health check route
-app.get("/", (req: Request, res: Response) => {
+app.get("/health-check", (req: Request, res: Response) => {
   res.status(200).json({ message: "welcome to the x clone" });
 });
-
 // all routes go here
 // all routes are prefixed with /api/v1
 app.use("/api/v1", MainRoute);
+// Serve static assets in production
+if (process.env.NODE_ENV === "production") {
+  // Set static folder
+  app.use(express.static(path.join(__dirname, "frontend", "dist")));
+  app.get("*", (req: Request, res: Response) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html")),
+  );
+}
 
 // Error handler
 app.use(errorHandler);
