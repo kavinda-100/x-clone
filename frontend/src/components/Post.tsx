@@ -13,18 +13,35 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { formatDateToRelativeTime } from "../lib/utils";
+import {
+  cn,
+  formatDateToRelativeTime,
+  formatNumber,
+  generateRandomNumber,
+} from "../lib/utils";
 import { Button } from "./ui/button";
-import { MessageSquareMore, ThumbsUp } from "lucide-react";
+import { Bookmark, Heart, MessageCircle, Repeat2, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { IKImage, IKVideo } from "imagekitio-react";
 import { Input } from "./ui/input";
-import { useMutation } from "@tanstack/react-query";
-import { likeUnlikePost, postComment } from "../api/post";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getAllLikesByPostId,
+  likeUnlikePost,
+  postComment,
+  deletePost,
+} from "../api/post";
 import { toast } from "sonner";
 import { useUserStore } from "../store/useUserStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type AllLikesByPostIdType = {
+  _id: string;
+  postId: string;
+  userId: string;
+};
 
 const Post = ({
   _id: postId,
@@ -42,8 +59,10 @@ const Post = ({
   },
 }: PostType) => {
   const [newComment, setNewComment] = useState("");
+  const [allLikes, setAllLikes] = useState<AllLikesByPostIdType[]>([]);
   const { user } = useUserStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const postClickHandler = (postId: string) => {
     navigate(`/post/${postId}`);
@@ -53,7 +72,26 @@ const Post = ({
     navigate(`/user/${username}`);
   };
 
-  // mutation for adding comment
+  //TODO: get all likes by post id
+  const { data, isSuccess, isError, error } = useQuery({
+    queryKey: ["allLikes", postId],
+    queryFn: async () => getAllLikesByPostId(postId || ""),
+  });
+  // console.log("all likes", data?.data);
+  useEffect(() => {
+    if (isSuccess) {
+      setAllLikes(data?.data);
+    }
+    if (isError) {
+      setAllLikes([]);
+    }
+  }, [isSuccess, data]);
+  if (isError) {
+    toast.error("Error getting likes");
+    console.log("error getting likes", error);
+  }
+
+  //TODO: mutation for adding comment
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: postCommentType) => postComment(data),
     onSuccess: () => {
@@ -87,16 +125,33 @@ const Post = ({
     mutate(data);
   };
 
-  // mutation for liking post
+  //TODO: mutation for liking post
   const { mutate: likePost, isPending: isLikePostPending } = useMutation({
     mutationFn: async (postId: string) => likeUnlikePost(postId),
     onSuccess: (data) => {
       console.log("post liked", data);
       toast.success(data?.message || "success");
+      queryClient.invalidateQueries({ queryKey: ["allLikes", postId] });
     },
     onError: (error) => {
       console.log("error liking post", error);
       toast.error(error.message || "Error liking post");
+    },
+  });
+
+  //TODO: mutation for deleting post
+  const { mutate: deletePostMutate } = useMutation({
+    mutationFn: async (postId: string) => deletePost(postId),
+    onSuccess: () => {
+      console.log("post deleted");
+      toast.success("Post deleted");
+      queryClient.invalidateQueries({
+        queryKey: ["userByUserName", user?.userName],
+      });
+    },
+    onError: (error) => {
+      console.log("error deleting post", error);
+      toast.error(error.message || "Error deleting post");
     },
   });
 
@@ -117,15 +172,41 @@ const Post = ({
                 {userName ? userName[0].toUpperCase() : ""}
               </AvatarFallback>
             </Avatar>
-            <CardTitle className={"hover:underline"}>{userName}</CardTitle>
+            <CardTitle className={"hover:underline truncate"}>
+              {userName}
+            </CardTitle>
           </div>
-          <p
-            className={
-              "text-muted-foreground text-sm text-pretty font-thin text-right"
-            }
-          >
-            {formatDateToRelativeTime(createdAt)}
-          </p>
+          <div className={"flex justify-center items-center gap-2"}>
+            <p
+              className={
+                "text-muted-foreground text-sm text-pretty font-thin text-right"
+              }
+            >
+              {formatDateToRelativeTime(createdAt)}
+            </p>
+            {userId === user?._id && (
+              <Dialog>
+                <DialogTrigger>
+                  <Trash className={"size-4 lg:size-5 text-red-600"} />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Are you sure, You want to delete this post?
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className={"w-full mt-2 flex justify-end"}>
+                    <Button
+                      onClick={() => deletePostMutate(postId)}
+                      variant={"destructive"}
+                    >
+                      Yes, Delete
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -157,43 +238,85 @@ const Post = ({
           />
         )}
       </CardContent>
-      <CardFooter className={"flex justify-evenly items-center"}>
-        <Button
-          variant={"ghost"}
-          size={"lg"}
-          className={"flex justify-start items-center"}
-          onClick={() => likePost(postId)}
-          disabled={isLikePostPending}
-        >
-          {likes} <ThumbsUp className={"size-10"} />
-        </Button>
-        {/* comment area */}
-        <Dialog>
-          <DialogTrigger>
-            <Button
-              variant={"ghost"}
-              size={"lg"}
-              className={"flex justify-start items-center"}
+      <ScrollArea>
+        <CardFooter className={"flex flex-row justify-evenly items-center"}>
+          {/* like area */}
+          <Button
+            variant={"ghost"}
+            size={"lg"}
+            className={"flex justify-start items-center"}
+            onClick={() => likePost(postId)}
+            disabled={isLikePostPending}
+          >
+            <Heart
+              className={cn("size-5 lg:size-10", {
+                "text-red-500 font-bold": allLikes.some(
+                  (like) => like.userId === user?._id,
+                ),
+              })}
+            />
+            <p
+              className={cn("text-pretty text-sm", {
+                "text-red-500 font-bold": allLikes.some(
+                  (like) => like.userId === user?._id,
+                ),
+              })}
             >
-              {comments} <MessageSquareMore />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add a comment</DialogTitle>
-            </DialogHeader>
-            <div className={"w-full flex-col gap-3"}>
-              <Input
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder={"Type comment here..."}
-              />
-              <Button onClick={() => handleComment(postId)} className={"mt-3"}>
-                {isPending ? "Adding comment..." : "Add Comment"}
+              {formatNumber(likes)}
+            </p>
+          </Button>
+          {/* bookMark area */}
+          <Button
+            variant={"ghost"}
+            size={"lg"}
+            className={"flex justify-start"}
+          >
+            <Bookmark className={"size-5 lg:size-10"} />
+            <p className={"text-sm"}>{formatNumber(generateRandomNumber())}</p>
+          </Button>
+          {/* comment area */}
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                variant={"ghost"}
+                size={"lg"}
+                className={"flex justify-start items-center"}
+              >
+                <MessageCircle className={"size-5 lg:size-10"} />
+                <p className={"text-sm"}>{formatNumber(comments)}</p>
               </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </CardFooter>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add a comment</DialogTitle>
+              </DialogHeader>
+              <div className={"w-full flex-col gap-3"}>
+                <Input
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder={"Type comment here..."}
+                />
+                <Button
+                  onClick={() => handleComment(postId)}
+                  className={"mt-3"}
+                >
+                  {isPending ? "Adding comment..." : "Add Comment"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          {/*  repeat area */}
+          <Button
+            variant={"ghost"}
+            size={"lg"}
+            className={"flex justify-start"}
+          >
+            <Repeat2 className={"size-5 lg:size-10"} />
+            <p className={"text-sm"}>{formatNumber(generateRandomNumber())}</p>
+          </Button>
+          {/* scroll bar */}
+          <ScrollBar orientation={"horizontal"} />
+        </CardFooter>
+      </ScrollArea>
     </Card>
   );
 };

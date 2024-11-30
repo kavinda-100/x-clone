@@ -52,9 +52,27 @@ export const postComment = async (data: postCommentType) => {
   }
 };
 
+export const deletePost = async (postId: string) => {
+  try {
+    const response = await API.delete(`/post/${postId}`);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
 export const likeUnlikePost = async (postId: string) => {
   try {
     const response = await API.post(`/post/like-unlike/${postId}`);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
+export const getAllLikesByPostId = async (postId: string) => {
+  try {
+    const response = await API.get(`/post/likes/${postId}`);
     return response.data;
   } catch (error) {
     handleAxiosError(error);

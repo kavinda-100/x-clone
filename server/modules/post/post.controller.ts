@@ -419,3 +419,15 @@ export const likeUnlikePost = async (req: any, res: Response) => {
     return;
   }
 };
+
+export const getAllLikesByPostId = async (req: Request, res: Response) => {
+  const postId = req.params.post_id;
+  try {
+    const likes = await LikeUnlikeModel.find({ postId: postId });
+    successResponse(res, 200, "likes", likes);
+  } catch (e: Error | any) {
+    console.log("error in get likes", e);
+    errorResponse(res, 400, e.message);
+    return;
+  }
+};

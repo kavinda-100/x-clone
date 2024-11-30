@@ -9,6 +9,7 @@ import {
   commentOnPost,
   getSinglePostByPostID,
   likeUnlikePost,
+  getAllLikesByPostId,
 } from "./post.controller";
 import authMiddleware from "../../middleware/authMiddleware";
 import { zodValidation } from "../../middleware/zodValidation";
@@ -49,5 +50,8 @@ router.post(
 // like/unlike post
 // http://localhost:5000/api/post/like-unlike/:post_id
 router.post("/like-unlike/:post_id", authMiddleware, likeUnlikePost);
+// get all likes by post id
+// http://localhost:5000/api/post/likes/:post_id
+router.get("/likes/:post_id", authMiddleware, getAllLikesByPostId);
 
 export default router;
