@@ -14,6 +14,8 @@ dotenv.config();
 const app = express();
 // Set the port
 const PORT = process.env.PORT || 5000;
+// path to the current directory
+const _dirname = path.resolve();
 
 // Middlewares
 app.use(express.json());
@@ -51,9 +53,10 @@ app.use("/api/v1", MainRoute);
 // Serve static assets in production
 if (process.env.NODE_ENV === "production") {
   // Set static folder
-  app.use(express.static(path.join(__dirname, "frontend", "dist")));
-  app.get("*", (req: Request, res: Response) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html")),
+  app.use(express.static(path.join(_dirname, "../frontend/dist")));
+  // Set static folder
+  app.use("*", (req: Request, res: Response) =>
+    res.sendFile(path.join(_dirname, "../frontend/dist/index.html")),
   );
 }
 

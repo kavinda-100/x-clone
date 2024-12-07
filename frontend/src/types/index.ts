@@ -1,3 +1,5 @@
+import { zodMessageSchemaType } from "../../../server/shared/zod/messages";
+
 export type PostType = {
   _id: string;
   title: string;
@@ -90,4 +92,20 @@ export type postCommentType = {
   comment: string;
   postId: string;
   userId: string;
+};
+
+export type messageUserType = {
+  _id: string;
+  userName: string;
+  email: string;
+  profileImage: string;
+};
+
+export type messageType = zodMessageSchemaType & {
+  _id: string;
+  createdAt: string;
+};
+
+export type onlineUserType = {
+  id: string;
 };
